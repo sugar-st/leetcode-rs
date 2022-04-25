@@ -127,6 +127,32 @@ impl Solution {
     }
     // 108: https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
     pub fn sorted_array_to_bst(nums: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-        None
+        fn split(nums: &Vec<i32>, s: usize, e: usize) -> Option<Rc<RefCell<TreeNode>>> {
+            if e - s == 0 {
+                return None;
+            } else if e - s == 1 {
+                return Some(Rc::new(RefCell::new(TreeNode::new(nums[s]))));
+            }
+            let m = s + (e - s) / 2;
+            let root = Rc::new(RefCell::new(TreeNode::new(nums[m])));
+            root.borrow_mut().left = split(nums, s, m);
+            root.borrow_mut().right = split(nums, m + 1, e);
+            return Some(root);
+        }
+        return split(&nums, 0, nums.len());
+    }
+    // 118: https://leetcode-cn.com/problems/pascals-triangle/
+    pub fn generate(num_rows: i32) -> Vec<Vec<i32>> {
+        let mut res = vec![vec![1]];
+        for i in 1..num_rows as usize {
+            let mut line = vec![0; i + 1];
+            for j in 1..i {
+                line[j] = res[i - 1][j] + res[i - 1][j + 1];
+            }
+            line[0] = 1;
+            line[i] = 1;
+            res.push(line);
+        }
+        res
     }
 }
