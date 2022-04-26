@@ -147,12 +147,22 @@ impl Solution {
         for i in 1..num_rows as usize {
             let mut line = vec![0; i + 1];
             for j in 1..i {
-                line[j] = res[i - 1][j] + res[i - 1][j + 1];
+                line[j] = res[i - 1][j] + res[i - 1][j - 1];
             }
             line[0] = 1;
             line[i] = 1;
             res.push(line);
         }
+        res
+    }
+    // 119: https://leetcode-cn.com/problems/pascals-triangle-ii/
+    pub fn get_row(row_index: i32) -> Vec<i32> {
+        let mut res = vec![1;row_index as usize + 1];
+        let mut i = 1;
+        res.iter_mut().for_each(|x| {
+            *x = i;
+            i = i * (row_index - i + 1) / i;
+        });
         res
     }
 }
