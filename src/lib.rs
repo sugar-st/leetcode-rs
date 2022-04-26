@@ -157,12 +157,13 @@ impl Solution {
     }
     // 119: https://leetcode-cn.com/problems/pascals-triangle-ii/
     pub fn get_row(row_index: i32) -> Vec<i32> {
-        let mut res = vec![1;row_index as usize + 1];
-        let mut i = 1;
-        res.iter_mut().for_each(|x| {
-            *x = i;
-            i = i * (row_index - i + 1) / i;
-        });
+        let mut res = Vec::with_capacity(row_index as usize + 1);
+        res.push(1);
+        (0..row_index).for_each(|i| res.push((*res.last().unwrap() as i64 * (row_index - i) as i64 / (i + 1) as i64) as i32));
         res
+    }
+    // 121: https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
+    pub fn max_profit(prices: Vec<i32>) -> i32 {
+
     }
 }
