@@ -1,6 +1,9 @@
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::{cmp, collections::HashMap};
+use std::{
+    cmp,
+    collections::{HashMap, HashSet},
+};
 
 pub struct Solution {}
 
@@ -159,11 +162,52 @@ impl Solution {
     pub fn get_row(row_index: i32) -> Vec<i32> {
         let mut res = Vec::with_capacity(row_index as usize + 1);
         res.push(1);
-        (0..row_index).for_each(|i| res.push((*res.last().unwrap() as i64 * (row_index - i) as i64 / (i + 1) as i64) as i32));
+        (0..row_index).for_each(|i| {
+            res.push((*res.last().unwrap() as i64 * (row_index - i) as i64 / (i + 1) as i64) as i32)
+        });
         res
     }
     // 121: https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
     pub fn max_profit(prices: Vec<i32>) -> i32 {
+        if prices.len() < 2 {
+            return 0;
+        }
+        let mut res = 0;
+        let mut max = prices.last().unwrap();
+        for i in (0..prices.len() - 1).rev() {
+            res = cmp::max(res, max - prices[i]);
+            max = cmp::max(max, &prices[i]);
+        }
+        res
+    }
+    // 136: https://leetcode-cn.com/problems/single-number/
+    pub fn single_number(nums: Vec<i32>) -> i32 {
+        nums.iter().fold(0, |acc, x| acc ^ *x)
+    }
+    // 169: https://leetcode-cn.com/problems/majority-element/
+    pub fn majority_element(nums: Vec<i32>) -> i32 {
+        let mut res = nums[0];
+        let mut cnt = 1;
+        for i in 1..nums.len() {
+            if res == nums[i] {
+                cnt = cnt + 1;
+            } else {
+                cnt = cnt - 1;
+                if cnt == 0 {
+                    res = nums[i];
+                    cnt = 1;
+                }
+            }
+        }
+        res
+    }
+    // 217: https://leetcode-cn.com/problems/contains-duplicate/
+    pub fn contains_duplicate(nums: Vec<i32>) -> bool {
+        let set: HashSet<i32> = nums.clone().into_iter().collect();
+        set.len() != nums.len()
+    }
+    // 219: https://leetcode-cn.com/problems/contains-duplicate-ii/
+    pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
 
     }
 }
