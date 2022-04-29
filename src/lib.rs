@@ -190,7 +190,7 @@ impl Solution {
         let mut cnt = 1;
         for i in 1..nums.len() {
             if res == nums[i] {
-                cnt = cnt + 1;
+                cnt += 1;
             } else {
                 cnt = cnt - 1;
                 if cnt == 0 {
@@ -207,7 +207,122 @@ impl Solution {
         set.len() != nums.len()
     }
     // 219: https://leetcode-cn.com/problems/contains-duplicate-ii/
+    // slide-window suits here. although the algorithm seems more delicate but the implementation
+    // is more complicated.
     pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
+        let mut m = HashMap::new();
+        for i in 0..nums.len() {
+            let num = nums[i];
+            if let Some(j) = m.insert(num, i) {
+                if i - j <= k as usize {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+    // 228: https://leetcode-cn.com/problems/summary-ranges/
+    pub fn summary_ranges(nums: Vec<i32>) -> Vec<String> {
+        let mut res = Vec::new();
+        if nums.len() == 0 {
+            return res;
+        } else if nums.len() == 1 {
+            return vec![format!("{}", nums[0])];
+        }
+        let mut s = 0;
+        for i in 1..=nums.len() {
+            if i == nums.len() || nums[i] - nums[i - 1] != 1 {
+                if i - 1 - s >= 1 {
+                    res.push(format!("{}->{}", nums[s], nums[i - 1]))
+                } else {
+                    res.push(format!("{}", nums[s]))
+                }
+                s = i;
+            }
+        }
+        res
+    }
+    // 268: https://leetcode-cn.com/problems/missing-number/
+    pub fn missing_number(nums: Vec<i32>) -> i32 {
+        nums.iter()
+            .fold(nums.len() * (nums.len() + 1) / 2, |acc, x| {
+                acc - *x as usize
+            }) as i32
+    }
+    // 283: https://leetcode-cn.com/problems/move-zeroes/
+    pub fn move_zeroes(nums: &mut Vec<i32>) {
+        let mut s = 0;
+        for i in 0..nums.len() {
+            if nums[i] != 0 {
+                nums[s] = nums[i];
+                s += 1;
+            }
+        }
+        for i in s..nums.len() {
+            nums[i] = 0;
+        }
+    }
+}
 
+//303: https://leetcode-cn.com/problems/range-sum-query-immutable/
+struct NumArray {
+    sums: Vec<i32>,
+}
+
+impl NumArray {
+    fn new(nums: Vec<i32>) -> Self {
+        let mut sum = 0;
+        Self {
+            sums: nums
+                .iter()
+                .map(|num| {
+                    sum = *num + sum;
+                    sum
+                })
+                .collect(),
+        }
+    }
+
+    fn sum_range(&self, left: i32, right: i32) -> i32 {
+        let sum = if left == 0 {
+            0
+        } else {
+            self.sums[left as usize - 1]
+        };
+        self.sums[right as usize] - sum
+    }
+}
+
+impl Solution {
+    // 349: https://leetcode-cn.com/problems/intersection-of-two-arrays/
+    pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+        nums1
+            .into_iter()
+            .collect::<HashSet<i32>>()
+            .intersection(&nums2.into_iter().collect::<HashSet<i32>>())
+            .map(|&num| num)
+            .collect()
+    }
+    // 350: https://leetcode-cn.com/problems/intersection-of-two-arrays-ii/
+    pub fn intersect(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+        fn frequence(iter: &std::slice::Iter<i32>) -> HashMap<i32, i32> {
+            iter.copied().fold(HashMap::new(), |mut m, num| {
+                m.entry(num)
+                    .and_modify(|v| {
+                        *v += 1;
+                    })
+                    .or_insert(1);
+                m
+            })
+        }
+        let m1 = frequence(&nums1.iter());
+        let m2 = frequence(&nums2.iter());
+        m1.iter().fold(Vec::new(), |mut res, (&num, &frequence)| {
+            res.append(&mut vec![
+                num,
+                cmp::min(frequence, *m2.get(&num).unwrap_or(&0)),
+            ]);
+            res
+        })
     }
 }
