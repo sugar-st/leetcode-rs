@@ -249,6 +249,22 @@ impl Solution {
                 acc - *x as usize
             }) as i32
     }
+    // 448: https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/
+    pub fn find_disappeared_numbers(nums: Vec<i32>) -> Vec<i32> {
+        let mut nums = nums;
+        for i in 0..nums.len() {
+            let num = (nums[i].abs()) as usize - 1;
+            nums[num] = -nums[num].abs();
+        }
+        nums.iter()
+            .enumerate()
+            .fold(Vec::new(), |mut res, (idx, &num)| {
+                if num > 0 {
+                    res.push(idx as i32 + 1);
+                }
+                res
+            })
+    }
     // 283: https://leetcode-cn.com/problems/move-zeroes/
     pub fn move_zeroes(nums: &mut Vec<i32>) {
         let mut s = 0;
@@ -305,24 +321,39 @@ impl Solution {
     }
     // 350: https://leetcode-cn.com/problems/intersection-of-two-arrays-ii/
     pub fn intersect(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
-        fn frequence(iter: &std::slice::Iter<i32>) -> HashMap<i32, i32> {
-            iter.copied().fold(HashMap::new(), |mut m, num| {
-                m.entry(num)
-                    .and_modify(|v| {
-                        *v += 1;
-                    })
-                    .or_insert(1);
+        fn frequence(nums: &Vec<i32>) -> HashMap<i32, usize> {
+            nums.iter().fold(HashMap::new(), |mut m, num| {
+                *m.entry(*num).or_insert(0) += 1;
                 m
             })
         }
-        let m1 = frequence(&nums1.iter());
-        let m2 = frequence(&nums2.iter());
-        m1.iter().fold(Vec::new(), |mut res, (&num, &frequence)| {
-            res.append(&mut vec![
-                num,
-                cmp::min(frequence, *m2.get(&num).unwrap_or(&0)),
-            ]);
+        let m1 = frequence(&nums1);
+        let m2 = frequence(&nums2);
+        m1.iter().fold(Vec::new(), |mut res, (&num, &freq)| {
+            res.append(&mut vec![num; cmp::min(freq, *m2.get(&num).unwrap_or(&0))]);
             res
         })
+    }
+    // 414: https://leetcode-cn.com/problems/third-maximum-number/
+    pub fn third_max(nums: Vec<i32>) -> i32 {
+        let mut seq = Vec::with_capacity(4);
+        for i in 0..nums.len() {
+            if !seq.contains(&nums[i]) {
+                seq.push(nums[i]);
+                seq.sort_by(|a, b| b.cmp(a));
+                if seq.len() > 3 {
+                    seq.pop();
+                }
+            }
+        }
+        if seq.len() < 3 {
+            *seq.first().unwrap()
+        } else {
+            *seq.last().unwrap()
+        }
+    }
+    // 453: https://leetcode-cn.com/problems/minimum-moves-to-equal-array-elements-ii/
+    pub fn min_moves_to_equal_array_elements_ii(nums: Vec<i32>) -> i32 {
+        nums.iter().sum::<i32>() - nums.iter().min().unwrap() * (nums.len() as i32)
     }
 }
