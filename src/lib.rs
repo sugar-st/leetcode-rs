@@ -1,9 +1,7 @@
 use std::cell::RefCell;
+use std::cmp;
+use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
-use std::{
-    cmp,
-    collections::{HashMap, HashSet},
-};
 
 pub struct Solution {}
 
@@ -281,11 +279,13 @@ impl Solution {
 }
 
 //303: https://leetcode-cn.com/problems/range-sum-query-immutable/
+#[allow(dead_code)]
 struct NumArray {
     sums: Vec<i32>,
 }
 
 impl NumArray {
+    #[allow(dead_code)]
     fn new(nums: Vec<i32>) -> Self {
         let mut sum = 0;
         Self {
@@ -299,6 +299,7 @@ impl NumArray {
         }
     }
 
+    #[allow(dead_code)]
     fn sum_range(&self, left: i32, right: i32) -> i32 {
         let sum = if left == 0 {
             0
@@ -355,5 +356,151 @@ impl Solution {
     // 453: https://leetcode-cn.com/problems/minimum-moves-to-equal-array-elements-ii/
     pub fn min_moves_to_equal_array_elements_ii(nums: Vec<i32>) -> i32 {
         nums.iter().sum::<i32>() - nums.iter().min().unwrap() * (nums.len() as i32)
+    }
+    // 455: https://leetcode-cn.com/problems/assign-cookies/
+    pub fn find_content_children(g: Vec<i32>, s: Vec<i32>) -> i32 {
+        let mut g = g;
+        let mut s = s;
+        s.sort();
+        g.sort();
+        let mut res = 0;
+        let mut i = 0;
+        for cookie in s {
+            if i >= g.len() {
+                break;
+            }
+            if g[i] <= cookie {
+                res += 1;
+                i += 1;
+            }
+        }
+        res
+    }
+    // 463: https://leetcode-cn.com/problems/island-perimeter/
+    pub fn island_perimeter(grid: Vec<Vec<i32>>) -> i32 {
+        let mut res = 0;
+        let r = grid.len();
+        if r == 0 {
+            return res;
+        }
+        let c = grid[0].len();
+        for i in 0..r {
+            for j in 0..c {
+                if grid[i][j] == 0 {
+                    continue;
+                }
+                if i < r - 1 && grid[i + 1][j] == 0 || i == r - 1 {
+                    res += 1;
+                }
+                if j < c - 1 && grid[i][j + 1] == 0 || j == c - 1 {
+                    res += 1;
+                }
+                if i > 0 && grid[i - 1][j] == 0 || i == 0 {
+                    res += 1;
+                }
+                if j > 0 && grid[i][j - 1] == 0 || j == 0 {
+                    res += 1;
+                }
+            }
+        }
+        res
+    }
+    // 485: https://leetcode-cn.com/problems/max-consecutive-ones/
+    pub fn find_max_consecutive_ones(nums: Vec<i32>) -> i32 {
+        let mut nums = nums;
+        if *nums.last().unwrap() == 1 {
+            nums.push(0);
+        }
+        let mut res = 0;
+        let mut start = -1 as i32;
+        for (i, n) in nums.iter().enumerate() {
+            if *n == 0 {
+                res = cmp::max(res, i as i32 - start - 1);
+                start = i as i32;
+            }
+        }
+        res
+    }
+    // 495: https://leetcode-cn.com/problems/teemo-attacking/
+    pub fn find_poisoned_duration(time_series: Vec<i32>, duration: i32) -> i32 {
+        let mut res = duration;
+        for i in 0..time_series.len() - 1 {
+            res += cmp::min(duration, time_series[i + 1] - time_series[i]);
+        }
+        res
+    }
+    //496: https://leetcode.cn/problems/next-greater-element-i/
+    pub fn next_greater_element(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+        let mut nums2 = nums2;
+        let mut map = HashMap::new();
+        for i in 0..nums2.len() {
+            map.insert(nums2[i], i);
+        }
+        let mut stack = Vec::new();
+        for i in (0..nums2.len()).rev() {
+            let curr = nums2[i];
+            while stack.len() > 0 && *stack.last().unwrap() < curr {
+                stack.pop();
+            }
+            nums2[i] = match stack.last() {
+                Some(&num) => num,
+                None => -1,
+            };
+            stack.push(curr);
+        }
+        let mut res = Vec::new();
+        for num in nums1 {
+            res.push(nums2[*map.get(&num).unwrap()])
+        }
+        res
+    }
+    // 500: https://leetcode.cn/problems/keyboard-row/
+    pub fn find_words(words: Vec<String>) -> Vec<String> {
+        let map: HashMap<char, i32> = vec![
+            ('q', 0),
+            ('w', 0),
+            ('e', 0),
+            ('r', 0),
+            ('t', 0),
+            ('y', 0),
+            ('u', 0),
+            ('i', 0),
+            ('o', 0),
+            ('p', 0),
+            ('a', 1),
+            ('s', 1),
+            ('d', 1),
+            ('f', 1),
+            ('g', 1),
+            ('h', 1),
+            ('j', 1),
+            ('k', 1),
+            ('l', 1),
+            ('z', 2),
+            ('x', 2),
+            ('c', 2),
+            ('v', 2),
+            ('b', 2),
+            ('n', 2),
+            ('m', 2),
+        ]
+        .into_iter()
+        .collect();
+
+        let mut res = Vec::new();
+        for word in words {
+            let w = word.to_lowercase();
+            let mut line = *map.get(&w.chars().next().unwrap()).unwrap();
+            for c in w.chars() {
+                if *map.get(&c).unwrap() != line {
+                    line = -1;
+                    break;
+                }
+            }
+            if line != -1 {
+                res.push(word);
+            }
+        }
+        res
     }
 }
