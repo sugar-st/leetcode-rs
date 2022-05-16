@@ -503,14 +503,14 @@ impl Solution {
         }
         res
     }
-    // unsolverd
     // 506: https://leetcode-cn.com/problems/relative-ranks/
     pub fn find_relative_ranks(nums: Vec<i32>) -> Vec<String> {
         let mut sorted = nums.clone();
         sorted.sort();
+        sorted.reverse();
         let mut map = HashMap::new();
         for i in 0..sorted.len() {
-            map.insert(sorted[i], i);
+            map.insert(sorted[i], i + 1);
         }
         let mut res = Vec::new();
         for num in nums {
@@ -525,7 +525,7 @@ impl Solution {
         res
     }
     // 561: https://leetcode-cn.com/problems/array-partition-i/
-    pub fn array_partition_i(nums: Vec<i32>) -> i32 {
+    pub fn array_pair_sum(nums: Vec<i32>) -> i32 {
         let mut nums = nums;
         nums.sort();
         let mut res = 0;
@@ -536,14 +536,13 @@ impl Solution {
     }
     // 566: https://leetcode-cn.com/problems/reshape-the-matrix/
     pub fn matrix_reshape(nums: Vec<Vec<i32>>, r: i32, c: i32) -> Vec<Vec<i32>> {
-        let mut res = vec![vec![0; c as usize]; r as usize];
-        let pr = nums.len();
-        let r = r as usize;
-        let cnt = pr * nums[0].len();
-        for i in 0..cnt {
-            res[i/r][i%r] = nums[i/pr][i%pr];
+        if nums[0].len() * nums.len() != (r * c) as usize {
+            return nums;
         }
-        res
+        nums.concat()
+            .chunks(c as usize)
+            .map(|x| x.to_vec())
+            .collect()
     }
     // 575: https://leetcode-cn.com/problems/distribute-candies/
     pub fn distribute_candies(candies: Vec<i32>) -> i32 {
@@ -558,8 +557,10 @@ impl Solution {
             *map.entry(num).or_insert(0) += 1;
         }
         let mut max = 0;
-        for (key, value) in map {
-            max = cmp::max(value + *map.entry(key + 1).or_default(), max);
+        for (&key, &value) in map.iter() {
+            if let Some(&v) = map.get(&(key + 1)) {
+                max = cmp::max(max, value + v);
+            }
         }
         max
     }
