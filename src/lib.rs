@@ -503,4 +503,64 @@ impl Solution {
         }
         res
     }
+    // unsolverd
+    // 506: https://leetcode-cn.com/problems/relative-ranks/
+    pub fn find_relative_ranks(nums: Vec<i32>) -> Vec<String> {
+        let mut sorted = nums.clone();
+        sorted.sort();
+        let mut map = HashMap::new();
+        for i in 0..sorted.len() {
+            map.insert(sorted[i], i);
+        }
+        let mut res = Vec::new();
+        for num in nums {
+            let s = match *map.get(&num).unwrap() {
+                1 => String::from("Gold Medal"),
+                2 => String::from("Silver Medal"),
+                3 => String::from("Bronze Medal"),
+                num => num.to_string(),
+            };
+            res.push(s);
+        }
+        res
+    }
+    // 561: https://leetcode-cn.com/problems/array-partition-i/
+    pub fn array_partition_i(nums: Vec<i32>) -> i32 {
+        let mut nums = nums;
+        nums.sort();
+        let mut res = 0;
+        for &num in nums.iter().step_by(2) {
+            res += num;
+        }
+        res
+    }
+    // 566: https://leetcode-cn.com/problems/reshape-the-matrix/
+    pub fn matrix_reshape(nums: Vec<Vec<i32>>, r: i32, c: i32) -> Vec<Vec<i32>> {
+        let mut res = vec![vec![0; c as usize]; r as usize];
+        let pr = nums.len();
+        let r = r as usize;
+        let cnt = pr * nums[0].len();
+        for i in 0..cnt {
+            res[i/r][i%r] = nums[i/pr][i%pr];
+        }
+        res
+    }
+    // 575: https://leetcode-cn.com/problems/distribute-candies/
+    pub fn distribute_candies(candies: Vec<i32>) -> i32 {
+        let len = candies.len();
+        let set: HashSet<_> = candies.into_iter().collect();
+        return cmp::min(set.len(), len / 2) as i32;
+    }
+    // 594: https://leetcode-cn.com/problems/longest-harmonious-subsequence/
+    pub fn find_lhs(nums: Vec<i32>) -> i32 {
+        let mut map = HashMap::new();
+        for num in nums {
+            *map.entry(num).or_insert(0) += 1;
+        }
+        let mut max = 0;
+        for (key, value) in map {
+            max = cmp::max(value + *map.entry(key + 1).or_default(), max);
+        }
+        max
+    }
 }
