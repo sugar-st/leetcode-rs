@@ -564,4 +564,14 @@ impl Solution {
         }
         max
     }
+    // 598: https://leetcode-cn.com/problems/range-addition-ii/
+    pub fn max_count(m: i32, n: i32, ops: Vec<Vec<i32>>) -> i32 {
+        let mut x = m;
+        let mut y = n;
+        for op in ops {
+            x = cmp::min(x, op[0]);
+            y = cmp::min(y, op[1]);
+        }
+        x * y
+    }
 }
