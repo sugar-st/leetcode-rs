@@ -574,4 +574,133 @@ impl Solution {
         }
         x * y
     }
+    //unresolved
+    // 599: https://leetcode-cn.com/problems/minimum-index-sum-of-two-lists/
+    pub fn find_restaurant(list1: Vec<String>, list2: Vec<String>) -> Vec<String> {
+        let mut map = HashMap::new();
+        let mut min = usize::MAX;
+        let mut res = Vec::new();
+        for i in 0..list1.len() {
+            map.insert(&list1[i], i);
+        }
+        for i in 0..list2.len() {
+            if let Some(common) = map.get(&list2[i]) {
+                if common + i <= min {
+                    if common + i < min {
+                        res.clear();
+                        min = common + i;
+                    }
+                    res.push(list2[i].clone());
+                }
+            }
+        }
+        res
+    }
+    // 605: https://leetcode-cn.com/problems/can-place-flowers/
+    pub fn can_place_flowers(flowerbed: Vec<i32>, n: i32) -> bool {
+        let mut flowerbed = flowerbed;
+        for i in 0..flowerbed.len() {
+            if flowerbed[i] == 1 {
+                if i > 0 {
+                    flowerbed[i - 1] = -1;
+                }
+                if i < flowerbed.len() - 1 && flowerbed[i + 1] == 0 {
+                    flowerbed[i + 1] = -1;
+                }
+                flowerbed[i] = -1;
+            }
+        }
+        let mut slots = 0;
+        for slot in flowerbed {
+            if slot == 0 {
+                slots += 1;
+            }
+        }
+        n <= (slots - 1) / 2
+    }
+    // 628: https://leetcode-cn.com/problems/maximum-product-of-three-numbers/
+    pub fn maximum_product_of_three_numbers(nums: Vec<i32>) -> i32 {
+        let mut min = vec![nums[0], nums[1]];
+        min.sort();
+        let mut max = vec![nums[0], nums[1], nums[2]];
+        max.sort();
+        max.reverse();
+        for num in nums {
+            min.push(num);
+            min.sort();
+            min.pop();
+            max.push(num);
+            max.sort();
+            max.reverse();
+            max.pop();
+        }
+        cmp::max(min[0] * min[1] * max[0], max[0] * max[1] * max[2])
+    }
+    // 643: https://leetcode-cn.com/problems/maximum-average-subarray-i/
+    pub fn find_max_average(nums: Vec<i32>, k: i32) -> f64 {
+        let k = k as usize;
+        let mut current = 0;
+        for i in 0..k {
+            current += nums[i];
+        }
+        let mut max = current;
+        for i in k..nums.len() {
+            current = current + (nums[i] - nums[i - k]);
+            max = cmp::max(max, current);
+        }
+        current as f64 / k as f64
+    }
+    // 645: https://leetcode-cn.com/problems/set-mismatch/
+    pub fn find_error_nums(nums: Vec<i32>) -> Vec<i32> {
+        let mut nums = nums;
+        let mut res = vec![0, 0];
+        for i in 0..nums.len() {
+            let num = nums[i].abs();
+            let hash = &mut nums[num as usize - 1];
+            if *hash < 0 {
+                res[0] = num;
+            } else {
+                *hash = -*hash;
+            }
+        }
+        for i in 0..nums.len() {
+            if nums[i] > 0 {
+                res[1] = i as i32 + 1;
+                break;
+            }
+        }
+        res
+    }
+    // 661: https://leetcode-cn.com/problems/image-smoother/
+    pub fn image_smoother(m: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+        let r = m.len();
+        let c = m[0].len();
+        let mut res = vec![vec![0; c]; r];
+        let vectors = vec![
+            (-1, -1),
+            (-1, 0),
+            (-1, 1),
+            (0, -1),
+            (0, 0),
+            (0, 1),
+            (1, -1),
+            (1, 0),
+            (1, 1),
+        ];
+        for i in 0..r {
+            for j in 0..c {
+                let mut cnt = 0;
+                for vector in vectors.iter() {
+                    let ni = i as i32+ vector.0;
+                    let nj = j as i32+ vector.1;
+                    if ni >= 0 && i < r && nj >= 0 && j < c {
+                        cnt += 1;
+                        res[i][j] += m[ni as usize][nj as usize];
+                    }
+                    res[i][j] /= cnt;
+                }
+            }
+        }
+        res
+    }
 }
