@@ -1,5 +1,4 @@
 use std::cell::RefCell;
-use std::cmp;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
@@ -91,7 +90,7 @@ impl Solution {
                 sum = 0;
             }
             sum = sum + nums[i];
-            res = cmp::max(sum, res);
+            res = sum.max(res);
         }
         return res;
     }
@@ -173,8 +172,8 @@ impl Solution {
         let mut res = 0;
         let mut max = prices.last().unwrap();
         for i in (0..prices.len() - 1).rev() {
-            res = cmp::max(res, max - prices[i]);
-            max = cmp::max(max, &prices[i]);
+            res = res.max(max - prices[i]);
+            max = max.max(&prices[i]);
         }
         res
     }
@@ -331,7 +330,7 @@ impl Solution {
         let m1 = frequence(&nums1);
         let m2 = frequence(&nums2);
         m1.iter().fold(Vec::new(), |mut res, (&num, &freq)| {
-            res.append(&mut vec![num; cmp::min(freq, *m2.get(&num).unwrap_or(&0))]);
+            res.append(&mut vec![num; freq.min(*m2.get(&num).unwrap_or(&0))]);
             res
         })
     }
@@ -415,7 +414,7 @@ impl Solution {
         let mut start = -1 as i32;
         for (i, n) in nums.iter().enumerate() {
             if *n == 0 {
-                res = cmp::max(res, i as i32 - start - 1);
+                res = res.max(i as i32- start - 1);
                 start = i as i32;
             }
         }
@@ -425,7 +424,7 @@ impl Solution {
     pub fn find_poisoned_duration(time_series: Vec<i32>, duration: i32) -> i32 {
         let mut res = duration;
         for i in 0..time_series.len() - 1 {
-            res += cmp::min(duration, time_series[i + 1] - time_series[i]);
+            res += duration.min(time_series[i + 1] - time_series[i]);
         }
         res
     }
@@ -548,7 +547,7 @@ impl Solution {
     pub fn distribute_candies(candies: Vec<i32>) -> i32 {
         let len = candies.len();
         let set: HashSet<_> = candies.into_iter().collect();
-        return cmp::min(set.len(), len / 2) as i32;
+        set.len().min(len / 2) as i32
     }
     // 594: https://leetcode-cn.com/problems/longest-harmonious-subsequence/
     pub fn find_lhs(nums: Vec<i32>) -> i32 {
@@ -559,7 +558,7 @@ impl Solution {
         let mut max = 0;
         for (&key, &value) in map.iter() {
             if let Some(&v) = map.get(&(key + 1)) {
-                max = cmp::max(max, value + v);
+                max = max.max(value + v);
             }
         }
         max
@@ -569,8 +568,8 @@ impl Solution {
         let mut x = m;
         let mut y = n;
         for op in ops {
-            x = cmp::min(x, op[0]);
-            y = cmp::min(y, op[1]);
+            x = x.min(op[0]);
+            y = y.min(op[1]);
         }
         x * y
     }
@@ -634,7 +633,7 @@ impl Solution {
             max.reverse();
             max.pop();
         }
-        cmp::max(min[0] * min[1] * max[0], max[0] * max[1] * max[2])
+        (min[0] * min[1] * max[0]).max(max[0] * max[1] * max[2])
     }
     // 643: https://leetcode-cn.com/problems/maximum-average-subarray-i/
     pub fn find_max_average(nums: Vec<i32>, k: i32) -> f64 {
@@ -646,7 +645,7 @@ impl Solution {
         let mut max = current;
         for i in k..nums.len() {
             current = current + (nums[i] - nums[i - k]);
-            max = cmp::max(max, current);
+            max = max.max(current);
         }
         current as f64 / k as f64
     }
@@ -702,5 +701,31 @@ impl Solution {
             }
         }
         res
+    }
+    // 674: https://leetcode-cn.com/problems/longest-continuous-increasing-subsequence/
+    pub fn find_length_of_lcis(nums: Vec<i32>) -> i32 {
+        let mut res = 1;
+        let mut curr = 1;
+        for i in 0..nums.len() {
+            if i + 1 < nums.len() && nums[i+1] > nums[i] {
+                curr += 1;
+            } else {
+                res = res.max(curr);
+                curr = 1;
+            }
+        }
+        res
+    }
+    // 682: https://leetcode-cn.com/problems/baseball-game/
+    pub fn cal_points(ops: Vec<String>) -> i32 {
+        let mut v = Vec::new();
+        for op in ops {
+            match op {
+                "C" => v.pop(),
+                "D" => v.push(v.last().unwrap() * 2),
+                num => v.push(num.parse().unwrap()),
+            }
+        }
+        v.iter().sum()
     }
 }
