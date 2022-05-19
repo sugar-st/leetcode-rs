@@ -414,7 +414,7 @@ impl Solution {
         let mut start = -1 as i32;
         for (i, n) in nums.iter().enumerate() {
             if *n == 0 {
-                res = res.max(i as i32- start - 1);
+                res = res.max(i as i32 - start - 1);
                 start = i as i32;
             }
         }
@@ -573,7 +573,6 @@ impl Solution {
         }
         x * y
     }
-    //unresolved
     // 599: https://leetcode-cn.com/problems/minimum-index-sum-of-two-lists/
     pub fn find_restaurant(list1: Vec<String>, list2: Vec<String>) -> Vec<String> {
         let mut map = HashMap::new();
@@ -598,42 +597,25 @@ impl Solution {
     // 605: https://leetcode-cn.com/problems/can-place-flowers/
     pub fn can_place_flowers(flowerbed: Vec<i32>, n: i32) -> bool {
         let mut flowerbed = flowerbed;
+        let mut max = 0;
         for i in 0..flowerbed.len() {
-            if flowerbed[i] == 1 {
-                if i > 0 {
-                    flowerbed[i - 1] = -1;
+            if flowerbed[i] == 0 {
+                if (i == 0 || i > 0 && flowerbed[i - 1] == 0)
+                    && (i == flowerbed.len() - 1 || flowerbed[i + 1] == 0)
+                {
+                    flowerbed[i] = 1;
+                    max += 1;
                 }
-                if i < flowerbed.len() - 1 && flowerbed[i + 1] == 0 {
-                    flowerbed[i + 1] = -1;
-                }
-                flowerbed[i] = -1;
             }
         }
-        let mut slots = 0;
-        for slot in flowerbed {
-            if slot == 0 {
-                slots += 1;
-            }
-        }
-        n <= (slots - 1) / 2
+        n <= max
     }
     // 628: https://leetcode-cn.com/problems/maximum-product-of-three-numbers/
-    pub fn maximum_product_of_three_numbers(nums: Vec<i32>) -> i32 {
-        let mut min = vec![nums[0], nums[1]];
-        min.sort();
-        let mut max = vec![nums[0], nums[1], nums[2]];
-        max.sort();
-        max.reverse();
-        for num in nums {
-            min.push(num);
-            min.sort();
-            min.pop();
-            max.push(num);
-            max.sort();
-            max.reverse();
-            max.pop();
-        }
-        (min[0] * min[1] * max[0]).max(max[0] * max[1] * max[2])
+    pub fn maximum_product(nums: Vec<i32>) -> i32 {
+        let mut nums = nums;
+        nums.sort();
+        let len = nums.len();
+        (nums[0] * nums[1] * nums[len - 1]).max(nums[len - 1] * nums[len - 2] * nums[len - 3])
     }
     // 643: https://leetcode-cn.com/problems/maximum-average-subarray-i/
     pub fn find_max_average(nums: Vec<i32>, k: i32) -> f64 {
@@ -644,10 +626,10 @@ impl Solution {
         }
         let mut max = current;
         for i in k..nums.len() {
-            current = current + (nums[i] - nums[i - k]);
+            current += nums[i] - nums[i - k];
             max = max.max(current);
         }
-        current as f64 / k as f64
+        max as f64 / k as f64
     }
     // 645: https://leetcode-cn.com/problems/set-mismatch/
     pub fn find_error_nums(nums: Vec<i32>) -> Vec<i32> {
@@ -690,14 +672,14 @@ impl Solution {
             for j in 0..c {
                 let mut cnt = 0;
                 for vector in vectors.iter() {
-                    let ni = i as i32+ vector.0;
-                    let nj = j as i32+ vector.1;
-                    if ni >= 0 && i < r && nj >= 0 && j < c {
+                    let ni = i as i32 + vector.0;
+                    let nj = j as i32 + vector.1;
+                    if ni >= 0 && ni < r as i32 && nj >= 0 && nj < c as i32 {
                         cnt += 1;
                         res[i][j] += m[ni as usize][nj as usize];
                     }
-                    res[i][j] /= cnt;
                 }
+                res[i][j] /= cnt;
             }
         }
         res
@@ -707,7 +689,7 @@ impl Solution {
         let mut res = 1;
         let mut curr = 1;
         for i in 0..nums.len() {
-            if i + 1 < nums.len() && nums[i+1] > nums[i] {
+            if i + 1 < nums.len() && nums[i + 1] > nums[i] {
                 curr += 1;
             } else {
                 res = res.max(curr);
@@ -720,9 +702,13 @@ impl Solution {
     pub fn cal_points(ops: Vec<String>) -> i32 {
         let mut v = Vec::new();
         for op in ops {
-            match op {
-                "C" => v.pop(),
-                "D" => v.push(v.last().unwrap() * 2),
+            let len = v.len();
+            match op.as_str() {
+                "C" => {
+                    v.pop();
+                }
+                "D" => v.push(v[len - 1] * 2),
+                "+" => v.push(v[len - 1] + v[len - 2]),
                 num => v.push(num.parse().unwrap()),
             }
         }
