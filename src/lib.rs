@@ -746,7 +746,43 @@ impl Solution {
     }
 }
 
+// 705: https://leetcode.cn/problems/design-hashset/
+#[allow(dead_code)]
+struct MyHashSet {}
+
+impl MyHashSet {
+    fn new() -> Self {}
+
+    fn add(&self, key: i32) {}
+
+    fn remove(&self, key: i32) {}
+
+    fn contains(&self, key: i32) -> bool {}
+}
+
+// 706: https://leetcode.cn/problems/design-hashmap/
+#[allow(dead_code)]
+struct MyHashMap {}
+
+impl MyHashMap {
+    fn new() -> Self {}
+
+    fn put(&self, key: i32, value: i32) {}
+
+    fn get(&self, key: i32) -> i32 {}
+
+    fn remove(&self, key: i32) {}
+}
+
 impl Solution {
+    // 717: https://leetcode-cn.com/problems/1-bit-and-2-bit-characters/
+    pub fn is_one_bit_character(bits: Vec<i32>) -> bool {
+        let mut i = 0;
+        while i < bits.len() - 1 {
+            i += bits[i] as usize + 1;
+        }
+        i == bits.len() - 1
+    }
     // 720: https://leetcode-cn.com/problems/longest-word-in-dictionary/
     pub fn longest_word(words: Vec<String>) -> String {
         let mut words = words;
@@ -776,5 +812,21 @@ impl Solution {
             state += nums[i];
         }
         -1
+    }
+    // 733: https://leetcode-cn.com/problems/flood-fill/
+    pub fn flood_fill(image: Vec<Vec<i32>>, sr: i32, sc: i32, new_color: i32) -> Vec<Vec<i32>> {
+        let mut image = image;
+        let origin = &mut image[sr as usize][sc as usize];
+        let old_color = *origin;
+        if old_color != new_color {
+            *origin = new_color;
+            for (i, j) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
+                let (dr, dc) = ((sr + i) as usize, (sc + j) as usize);
+                if dr < image.len() && dc < image[0].len() && old_color == image[dr][dc] {
+                    image = Self::flood_fill(image, dr as i32, dc as i32, new_color)
+                }
+            }
+        }
+        image
     }
 }
