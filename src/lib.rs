@@ -717,19 +717,26 @@ impl Solution {
     // 697: https://leetcode-cn.com/problems/degree-of-an-array/
     pub fn find_shortest_sub_array(nums: Vec<i32>) -> i32 {
         let mut map = HashMap::new();
-        let mut max = (0, i32::MAX);
+        let mut list = Vec::new();
+        let mut max = 0;
         for (i, num) in nums.iter().enumerate() {
             let entry = map.entry(num).or_insert((0, i, i));
             entry.0 += 1;
             entry.2 = i;
-            let len = (entry.2 - entry.1 + 1) as i32;
-            if max.0 == entry.0 {
-                max.1 = max.1.min(len);
-            } else if entry.0 > max.0 {
-                max.1 = len;
+            if max == entry.0 {
+                list.push(num);
+            } else if entry.0 > max {
+                max = entry.0;
+                list.clear();
+                list.push(num);
             }
         }
-        max.1
+        let mut min = usize::MAX;
+        for num in list {
+            let entry = map.get(num).unwrap();
+            min = min.min(entry.2 - entry.1 + 1);
+        }
+        min as i32
     }
     // 704: https://leetcode-cn.com/problems/binary-search/
     pub fn search(nums: Vec<i32>, target: i32) -> i32 {
@@ -749,4 +756,3 @@ impl Solution {
         -1
     }
 }
-
