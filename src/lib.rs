@@ -700,19 +700,21 @@ impl Solution {
     }
     // 682: https://leetcode-cn.com/problems/baseball-game/
     pub fn cal_points(ops: Vec<String>) -> i32 {
-        let mut v = Vec::new();
-        for op in ops {
-            let len = v.len();
-            match op.as_str() {
-                "C" => {
-                    v.pop();
+        ops.iter()
+            .fold(Vec::new(), |mut v, op| {
+                let len = v.len();
+                match op.as_str() {
+                    "C" => {
+                        v.pop();
+                    }
+                    "D" => v.push(v[len - 1] * 2),
+                    "+" => v.push(v[len - 1] + v[len - 2]),
+                    num => v.push(num.parse().unwrap()),
                 }
-                "D" => v.push(v[len - 1] * 2),
-                "+" => v.push(v[len - 1] + v[len - 2]),
-                num => v.push(num.parse().unwrap()),
-            }
-        }
-        v.iter().sum()
+                v
+            })
+            .iter()
+            .sum()
     }
     // 697: https://leetcode-cn.com/problems/degree-of-an-array/
     pub fn find_shortest_sub_array(nums: Vec<i32>) -> i32 {
@@ -740,18 +742,38 @@ impl Solution {
     }
     // 704: https://leetcode-cn.com/problems/binary-search/
     pub fn search(nums: Vec<i32>, target: i32) -> i32 {
-        let mut s = 0;
-        let mut e = nums.len();
-        while s < e {
-            let mid = s + (e - s) / 2;
-            let num = nums[mid];
-            if num == target {
-                return mid as i32;
-            } else if num < target {
-                s = mid + 1;
-            } else {
-                e = mid;
+        *nums.iter().find(|&&x| x == target).unwrap_or(&-1)
+    }
+}
+
+impl Solution {
+    // 720: https://leetcode-cn.com/problems/longest-word-in-dictionary/
+    pub fn longest_word(words: Vec<String>) -> String {
+        let mut words = words;
+        words.sort();
+        words
+            .iter()
+            .fold(("", HashSet::new()), |(mut res, mut set), str| {
+                if str.len() == 1 || set.contains(&str[..str.len() - 1]) {
+                    set.insert(str.as_str());
+                    if res.len() < str.len() {
+                        res = str;
+                    }
+                }
+                (res, set)
+            })
+            .0
+            .to_string()
+    }
+    // 724: https://leetcode-cn.com/problems/find-pivot-index/
+    pub fn pivot_index(nums: Vec<i32>) -> i32 {
+        let mut state = 0;
+        let sum = nums.iter().sum::<i32>();
+        for i in 0..nums.len() {
+            if sum == state * 2 + nums[i] {
+                return i as i32;
             }
+            state += nums[i];
         }
         -1
     }
