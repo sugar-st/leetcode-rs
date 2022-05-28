@@ -829,4 +829,72 @@ impl Solution {
         }
         image
     }
+    // 744: https://leetcode.cn/problems/find-smallest-letter-greater-than-target/
+    pub fn next_greatest_letter(letters: Vec<char>, target: char) -> char {
+        let (mut s, mut e) = (0, letters.len());
+        while s < e {
+            let m = s + (e - s) / 2;
+            if letters[m] <= target {
+                s = m + 1;
+            } else {
+                e = m;
+            }
+        }
+        if s < letters.len() && letters[s] > target {
+            return letters[s];
+        } else {
+            letters[0]
+        }
+    }
+    // 747: https://leetcode.cn/problems/largest-number-at-least-twice-of-others/
+    pub fn dominant_index(nums: Vec<i32>) -> i32 {
+        let max = nums
+            .iter()
+            .enumerate()
+            .max_by(|x, y| x.1.cmp(y.1))
+            .unwrap()
+            .0;
+        for i in 0..nums.len() {
+            if i == max {
+                continue;
+            }
+            if nums[i] * 2 > nums[max] {
+                return -1;
+            }
+        }
+        max as i32
+    }
+    // 748: https://leetcode.cn/problems/shortest-completing-word/
+    pub fn shortest_completing_word(license_plate: String, words: Vec<String>) -> String {
+        fn collect(word: &String) -> Vec<i32> {
+            word.bytes().fold(vec![0; 26], |mut map, c| {
+                if c.is_ascii_alphabetic() {
+                    map[(c.to_ascii_lowercase() - 'a' as u8) as usize] += 1;
+                }
+                map
+            })
+        }
+        fn cmp(x: &Vec<i32>, y: &Vec<i32>) -> bool {
+            for i in 0..26 {
+                if y[i] < x[i] {
+                    return false;
+                }
+            }
+            true
+        }
+        let mut ans: Option<String> = None;
+        let license_plate = collect(&license_plate);
+        for word in words {
+            if cmp(&license_plate, &collect(&word)) {
+                if ans.is_some() {
+                    if ans.as_ref().unwrap().bytes().len() > word.bytes().len() {
+                        ans = Some(word);
+                    }
+                } else {
+                    ans = Some(word);
+                }
+            }
+        }
+        ans.unwrap()
+    }
 }
