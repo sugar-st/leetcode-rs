@@ -897,4 +897,209 @@ impl Solution {
         }
         ans.unwrap()
     }
+    // Pending
+
+    // 766: https://leetcode.cn/problems/toeplitz-matrix/
+    pub fn is_toeplitz_matrix(matrix: Vec<Vec<i32>>) -> bool {
+        for i in 0..(matrix.len() - 1) {
+            for j in 0..(matrix[0].len() - 1) {
+                if matrix[i][j] != matrix[i + 1][j + 1] {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+    // 804: https://leetcode.cn/problems/unique-morse-code-words/
+    pub fn unique_morse_representations(words: Vec<String>) -> i32 {
+        let code = vec![
+            ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..",
+            "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-",
+            "-.--", "--..",
+        ];
+        let mut map = HashSet::new();
+        for word in words {
+            let mut str = String::from("");
+            for c in word.bytes() {
+                str.push_str(code[(c - 'a' as u8) as usize]);
+            }
+            map.insert(str);
+        }
+        map.len() as i32
+    }
+    // 812: https://leetcode.cn/problems/largest-triangle-area/
+    pub fn largest_triangle_area(points: Vec<Vec<i32>>) -> f64 {
+        0.0
+    }
+    // 821: https://leetcode.cn/problems/shortest-distance-to-a-character/
+    pub fn shortest_to_char(s: String, c: char) -> Vec<i32> {
+        let mut res = vec![std::i32::MAX; s.len()];
+        for (idx, ele) in s.chars().enumerate() {
+            if ele == c {
+                res[idx] = 0;
+                let i = idx - 1;
+                while i >= 0 && res[i] >= (idx - i) as i32 {
+                    res[i] = (idx - i) as i32;
+                }
+                i = idx + 1;
+                while i < res.len() && res[i] >= (i - idx) as i32 {
+                    res[i] = (i - idx) as i32;
+                }
+            }
+        }
+        res
+    }
+    // 832: https://leetcode.cn/problems/flipping-an-image
+    pub fn flip_and_invert_image(image: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+        let mut image = image;
+        for line in image {
+            line.reverse();
+            for e in line.iter_mut() {
+                let e = *e;
+                if e == 0 {
+                    e = 1;
+                } else {
+                    e = 0;
+                }
+            }
+        }
+        image
+    }
+    // 852: https://leetcode.cn/problems/peak-index-in-a-mountain-array/
+    pub fn peak_index_in_mountain_array(arr: Vec<i32>) -> i32 {
+        let mut left = 0;
+        let mut right = arr.len();
+        while left < right {
+            let mid = left + (right - left) / 2;
+            if arr[mid] > arr[mid - 1] {
+                if arr[mid] < arr[mid + 1] {
+                    return mid as i32;
+                } else {
+                    right = mid;
+                }
+            } else {
+                left = mid + 1;
+            }
+        }
+        panic!("not a mountain");
+    }
+    // 860: https://leetcode.cn/problems/lemonade-change/
+    pub fn lemonade_change(bills: Vec<i32>) -> bool {
+        let mut five = 0;
+        let mut ten = 0;
+        for bill in bills {
+            match bill {
+                5 => {
+                    five += 1;
+                }
+                10 => {
+                    five -= 1;
+                    ten += 1;
+                }
+                20 => {
+                    if ten > 0 {
+                        ten -= 1;
+                        five -= 1;
+                    } else {
+                        five -= 3;
+                    }
+                }
+            }
+            if five < 0 || ten < 0 {
+                return false;
+            }
+        }
+        true
+    }
+    // 867: https://leetcode.cn/problems/transpose-matrix/
+    pub fn transpose(matrix: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+        let mut res = vec![vec![0; matrix.len()]; matrix[0].len()];
+        for i in 0..matrix.len() {
+            for j in 0..matrix[0].len() {
+                res[j][i] = matrix[i][j];
+            }
+        }
+        res
+    }
+    // 883: https://leetcode.cn/problems/projection-area-of-3d-shapes/
+    pub fn projection_area(grid: Vec<Vec<i32>>) -> i32 {
+        let mut res = 0;
+        let mut front = vec![0; grid.len()];
+        for i in 0..grid.len() {
+            let mut max = 0;
+            for j in 0..grid[0].len() {
+                // top
+                if grid[i][j] != 0 {
+                    res += 1;
+                }
+                //side
+                max = max.max(grid[i][j]);
+                //front
+                front[j] = front[j].max(grid[i][j]);
+            }
+            res += max;
+        }
+        for front in front {
+            res += front;
+        }
+        res
+    }
+    // 888: https://leetcode.cn/problems/fair-candy-swap/
+    pub fn fair_candy_swap(alice_sizes: Vec<i32>, bob_sizes: Vec<i32>) -> Vec<i32> {
+        let mut alice_size = alice_sizes;
+        alice_sizes.sort();
+        let mut bob_sizes = bob_sizes;
+        bob_sizes.sort();
+        let am = alice_sizes.iter().sum::<i32>();
+        let bm = alice_sizes.iter().sum::<i32>();
+        let sub = (am + bm) / 2 - am;
+        let (mut i, mut j) = (0, 0);
+        while i < alice_sizes.len() && j < bob_sizes.len() {
+            let ac = alice_sizes[i];
+            let bc = bob_sizes[j];
+            if ac + sub == bc {
+                return vec![ac, bc];
+            } else if ac + sub < bc {
+                i += 1;
+            } else {
+                j += 1;
+            }
+        }
+        panic!("not found");
+    }
+    // 892: https://leetcode.cn/problems/surface-area-of-3d-shapes/
+    pub fn surface_area(grid: Vec<Vec<i32>>) -> i32 {
+        panic!("")
+    }
+    // 896: https://leetcode.cn/problems/monotonic-array/
+    pub fn is_monotonic(nums: Vec<i32>) -> bool {
+        if nums.len() == 1 {
+            return true;
+        }
+        let up = nums[0] < nums[1];
+        for i in 1..nums.len() {
+            if up && nums[i] < nums[i - 1] || !up && nums[i] > nums[i - 1] {
+                return false;
+            }
+        }
+        true
+    }
+    // 905: https://leetcode.cn/problems/sort-array-by-parity/
+    pub fn sort_array_by_parity(nums: Vec<i32>) -> Vec<i32> {
+        let mut nums = nums;
+        let mut last = 0;
+        for i in 0..nums.len() {
+            if nums[i] % 2 == 0 {
+                let tmp = nums[last];
+                nums[last] = nums[i];
+                nums[i] = tmp;
+                last += 1;
+            }
+        }
+        nums
+    }
+    // 908: https://leetcode.cn/problems/smallest-range-i/
+    pub fn smallest_range_i(nums: Vec<i32>, k: i32) -> i32 {
+
+    }
 }
