@@ -750,28 +750,38 @@ impl Solution {
 #[allow(dead_code)]
 struct MyHashSet {}
 
+#[allow(dead_code)]
 impl MyHashSet {
-    fn new() -> Self {}
+    fn new() -> Self {
+        panic!("");
+    }
 
-    fn add(&self, key: i32) {}
+    fn add(&self, _key: i32) {}
 
-    fn remove(&self, key: i32) {}
+    fn remove(&self, _key: i32) {}
 
-    fn contains(&self, key: i32) -> bool {}
+    fn contains(&self, _key: i32) -> bool {
+        panic!("");
+    }
 }
 
 // 706: https://leetcode.cn/problems/design-hashmap/
 #[allow(dead_code)]
 struct MyHashMap {}
 
+#[allow(dead_code)]
 impl MyHashMap {
-    fn new() -> Self {}
+    fn new() -> Self {
+        panic!("");
+    }
 
-    fn put(&self, key: i32, value: i32) {}
+    fn put(&self, _key: i32, _value: i32) {}
 
-    fn get(&self, key: i32) -> i32 {}
+    fn get(&self, _key: i32) -> i32 {
+        panic!("");
+    }
 
-    fn remove(&self, key: i32) {}
+    fn remove(&self, _key: i32) {}
 }
 
 impl Solution {
@@ -897,7 +907,6 @@ impl Solution {
         }
         ans.unwrap()
     }
-    // Pending
 
     // 766: https://leetcode.cn/problems/toeplitz-matrix/
     pub fn is_toeplitz_matrix(matrix: Vec<Vec<i32>>) -> bool {
@@ -909,6 +918,20 @@ impl Solution {
             }
         }
         true
+    }
+    // 806: https://leetcode.cn/problems/number-of-lines-to-write-string/
+    pub fn number_of_lines(widths: Vec<i32>, s: String) -> Vec<i32> {
+        let mut res = vec![1, 0];
+        for c in s.bytes() {
+            let idx = c as usize - 'a' as usize;
+            if widths[idx] + res[1] > 100 {
+                res[1] = widths[idx];
+                res[0] += 1;
+            } else {
+                res[1] += widths[idx];
+            }
+        }
+        res
     }
     // 804: https://leetcode.cn/problems/unique-morse-code-words/
     pub fn unique_morse_representations(words: Vec<String>) -> i32 {
@@ -929,22 +952,25 @@ impl Solution {
     }
     // 812: https://leetcode.cn/problems/largest-triangle-area/
     pub fn largest_triangle_area(points: Vec<Vec<i32>>) -> f64 {
-        0.0
+        panic!("");
     }
     // 821: https://leetcode.cn/problems/shortest-distance-to-a-character/
     pub fn shortest_to_char(s: String, c: char) -> Vec<i32> {
         let mut res = vec![std::i32::MAX; s.len()];
         for (idx, ele) in s.chars().enumerate() {
-            if ele == c {
-                res[idx] = 0;
-                let i = idx - 1;
-                while i >= 0 && res[i] >= (idx - i) as i32 {
-                    res[i] = (idx - i) as i32;
-                }
-                i = idx + 1;
-                while i < res.len() && res[i] >= (i - idx) as i32 {
-                    res[i] = (i - idx) as i32;
-                }
+            if ele != c {
+                continue;
+            }
+            res[idx] = 0;
+            let mut i = idx - 1;
+            while i < res.len() && res[i] >= (idx - i) as i32 {
+                res[i] = (idx - i) as i32;
+                i -= 1;
+            }
+            i = idx + 1;
+            while i < res.len() && res[i] >= (i - idx) as i32 {
+                res[i] = (i - idx) as i32;
+                i += 1;
             }
         }
         res
@@ -952,14 +978,13 @@ impl Solution {
     // 832: https://leetcode.cn/problems/flipping-an-image
     pub fn flip_and_invert_image(image: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
         let mut image = image;
-        for line in image {
+        for line in image.iter_mut() {
             line.reverse();
             for e in line.iter_mut() {
-                let e = *e;
-                if e == 0 {
-                    e = 1;
+                if *e == 0 {
+                    *e = 1;
                 } else {
-                    e = 0;
+                    *e = 0;
                 }
             }
         }
@@ -967,18 +992,18 @@ impl Solution {
     }
     // 852: https://leetcode.cn/problems/peak-index-in-a-mountain-array/
     pub fn peak_index_in_mountain_array(arr: Vec<i32>) -> i32 {
-        let mut left = 0;
-        let mut right = arr.len();
+        let mut left = 1;
+        let mut right = arr.len() - 1;
         while left < right {
             let mid = left + (right - left) / 2;
             if arr[mid] > arr[mid - 1] {
-                if arr[mid] < arr[mid + 1] {
+                if arr[mid] > arr[mid + 1] {
                     return mid as i32;
                 } else {
-                    right = mid;
+                    left = mid + 1;
                 }
             } else {
-                left = mid + 1;
+                right = mid;
             }
         }
         panic!("not a mountain");
@@ -1003,6 +1028,9 @@ impl Solution {
                     } else {
                         five -= 3;
                     }
+                }
+                _ => {
+                    panic!("error");
                 }
             }
             if five < 0 || ten < 0 {
@@ -1046,12 +1074,12 @@ impl Solution {
     }
     // 888: https://leetcode.cn/problems/fair-candy-swap/
     pub fn fair_candy_swap(alice_sizes: Vec<i32>, bob_sizes: Vec<i32>) -> Vec<i32> {
-        let mut alice_size = alice_sizes;
+        let mut alice_sizes = alice_sizes;
         alice_sizes.sort();
         let mut bob_sizes = bob_sizes;
         bob_sizes.sort();
         let am = alice_sizes.iter().sum::<i32>();
-        let bm = alice_sizes.iter().sum::<i32>();
+        let bm = bob_sizes.iter().sum::<i32>();
         let sub = (am + bm) / 2 - am;
         let (mut i, mut j) = (0, 0);
         while i < alice_sizes.len() && j < bob_sizes.len() {
@@ -1069,20 +1097,36 @@ impl Solution {
     }
     // 892: https://leetcode.cn/problems/surface-area-of-3d-shapes/
     pub fn surface_area(grid: Vec<Vec<i32>>) -> i32 {
-        panic!("")
+        let mut res = 0;
+        let (row, col) = (grid.len(), grid[0].len());
+        for i in 0..row {
+            for j in 0..col {
+                if grid[i][j] != 0 {
+                    res += 2;
+                }
+                for (x, y) in vec![(i + 1, j), (i, j + 1), (i - 1, j), (i, j - 1)] {
+                    if x < row && y < col && grid[x][y] < grid[i][j] {
+                        res += grid[i][j] - grid[x][y];
+                    } else if x >= row || y >= col {
+                        res += grid[i][j]
+                    }
+                }
+            }
+        }
+        res
     }
     // 896: https://leetcode.cn/problems/monotonic-array/
     pub fn is_monotonic(nums: Vec<i32>) -> bool {
-        if nums.len() == 1 {
-            return true;
-        }
-        let up = nums[0] < nums[1];
+        let mut up = false;
+        let mut down = false;
         for i in 1..nums.len() {
-            if up && nums[i] < nums[i - 1] || !up && nums[i] > nums[i - 1] {
-                return false;
+            if nums[i] > nums[i - 1] {
+                up = true;
+            } else if nums[i] < nums[i - 1] {
+                down = true;
             }
         }
-        true
+        !(up && down)
     }
     // 905: https://leetcode.cn/problems/sort-array-by-parity/
     pub fn sort_array_by_parity(nums: Vec<i32>) -> Vec<i32> {
@@ -1100,6 +1144,20 @@ impl Solution {
     }
     // 908: https://leetcode.cn/problems/smallest-range-i/
     pub fn smallest_range_i(nums: Vec<i32>, k: i32) -> i32 {
-
+        let (mut min, mut max) = (std::i32::MAX, std::i32::MIN);
+        for num in nums {
+            min = min.min(num);
+            max = max.max(num);
+        }
+        let distance = max - min - 2 * k;
+        if distance < 0 {
+            0
+        } else {
+            distance
+        }
+    }
+    // 914: https://leetcode.cn/problems/x-of-a-kind-in-a-deck-of-cards/
+    pub fn has_groups_size_x(deck: Vec<i32>) -> bool {
+        panic!("");
     }
 }
