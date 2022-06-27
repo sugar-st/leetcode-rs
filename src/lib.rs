@@ -1204,4 +1204,164 @@ impl Solution {
             gcd(res, num)
         }) > 1
     }
+    // Pending
+    // 922: https://leetcode.cn/problems/sort-array-by-parity-ii/
+    pub fn sort_array_by_parity_ii(nums: Vec<i32>) -> Vec<i32> {
+        let mut nums = nums;
+        let mut next = 0;
+        while next < nums.len() && nums[next] % 2 == 0 {
+            next += 2;
+        }
+        for i in (1..nums.len()).step_by(2) {
+            if nums[i] % 2 == 0 {
+                let tmp = nums[i];
+                nums[i] = nums[next];
+                nums[next] = tmp;
+                next += 2;
+            }
+        }
+        nums
+    }
+    // 929: https://leetcode.cn/problems/unique-email-addresses/solution/
+    pub fn num_unique_emails(emails: Vec<String>) -> i32 {
+        use std::collections::HashSet;
+        emails
+            .iter()
+            .map(|str| {
+                let mut strs = str.split('@');
+                let local = strs
+                    .next()
+                    .unwrap()
+                    .split('+')
+                    .next()
+                    .unwrap()
+                    .replace(".", "");
+                let remote = strs.next().unwrap();
+                (local, remote)
+            })
+            .collect::<HashSet<_>>()
+            .len() as i32
+    }
+    // 937: https://leetcode.cn/problems/reorder-data-in-log-files/
+    pub fn reorder_log_files(logs: Vec<String>) -> Vec<String> {
+        panic!("");
+    }
+    // 941: https://leetcode.cn/problems/valid-mountain-array/
+    pub fn valid_mountain_array(arr: Vec<i32>) -> bool {
+        let len = arr.len();
+        if !(arr[0] < arr[1] && arr[len - 2] > arr[len - 1]) {
+            return false;
+        }
+        for i in 1..(len - 1) {
+            if arr[i] == arr[i - 1] || arr[i] < arr[i - 1] && arr[i] > arr[i + 1] {
+                return false;
+            }
+        }
+        return true;
+    }
+    // 942: https://leetcode.cn/problems/di-string-match/
+    pub fn di_string_match(s: String) -> Vec<i32> {
+        panic!("");
+    }
+    // 944: https://leetcode.cn/problems/delete-columns-to-make-sorted/
+    pub fn min_deletion_size(strs: Vec<String>) -> i32 {
+        panic!("");
+    }
+    // 953: https://leetcode.cn/problems/verifying-an-alien-dictionary/
+    pub fn is_alien_sorted(words: Vec<String>, order: String) -> bool {
+        panic!("");
+    }
+    // 961: https://leetcode.cn/problems/n-repeated-element-in-size-2n-array/
+    pub fn repeated_n_times(nums: Vec<i32>) -> i32 {
+        let mut cnt = 0;
+        let mut res = 0;
+        for i in 0..nums.len() {
+            if cnt == 0 {
+                res = nums[i];
+            }
+            if nums[i] == res {
+                cnt += 1;
+            } else {
+                cnt -= 1;
+            }
+        }
+        res
+    }
+    // 976: https://leetcode.cn/problems/largest-perimeter-triangle/
+    pub fn largest_perimeter(nums: Vec<i32>) -> i32 {
+        panic!("");
+    }
+    // 977: https://leetcode.cn/problems/squares-of-a-sorted-array/
+    pub fn sorted_squares(nums: Vec<i32>) -> Vec<i32> {
+        let mut nums = nums;
+        nums.sort_by(|a, b| a.abs().partial_cmp(&b.abs()).unwrap());
+        nums.into_iter().map(|x| x * x).collect()
+    }
+    // 989: https://leetcode.cn/problems/add-to-array-form-of-integer/
+    pub fn add_to_array_form(num: Vec<i32>, k: i32) -> Vec<i32> {
+        let mut num = num;
+        for i in (0..num.len()).rev() {}
+        panic!("");
+    }
+    // 997: https://leetcode.cn/problems/find-the-town-judge/
+    pub fn find_judge(n: i32, trust: Vec<Vec<i32>>) -> i32 {
+        use std::collections::HashMap;
+        let m = trust.iter().fold(HashMap::new(), |mut m, trust| {
+            *m.entry(trust[1]).or_insert(0) += 1;
+            m
+        });
+        for (k, v) in m {
+            if v == n - 1 {
+                return k;
+            }
+        }
+        panic!("not found");
+    }
+    // 999: https://leetcode.cn/problems/available-captures-for-rook/
+    pub fn num_rook_captures(board: Vec<Vec<char>>) -> i32 {
+        let mut res = 0;
+        let (row, col) = (board.len(), board[0].len());
+        let mut r = (0, 0);
+        for i in 0..row {
+            for j in 0..col {
+                if board[i][j] == 'R' {
+                    r = (i, j);
+                    break;
+                }
+            }
+        }
+        for i in (0..r.0).rev() {
+            if board[i][r.1] == 'B' {
+                break;
+            }
+            if board[i][r.1] == 'p' {
+                res += 1;
+            }
+        }
+        for i in (r.0 + 1)..row {
+            if board[i][r.1] == 'B' {
+                break;
+            }
+            if board[i][r.1] == 'p' {
+                res += 1;
+            }
+        }
+        for j in (0..r.1).rev() {
+            if board[r.0][j] == 'B' {
+                break;
+            }
+            if board[r.0][j] == 'p' {
+                res += 1;
+            }
+        }
+        for j in (r.1 + 1)..col {
+            if board[r.0][j] == 'B' {
+                break;
+            }
+            if board[r.0][j] == 'p' {
+                res += 1;
+            }
+        }
+        res
+    }
 }
