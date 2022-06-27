@@ -1,5 +1,4 @@
 use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
 pub struct Solution {}
@@ -25,6 +24,7 @@ impl TreeNode {
 impl Solution {
     // 1: https://leetcode-cn.com/problems/two-sum/
     pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+        use std::collections::HashMap;
         let mut m = HashMap::new();
         for (i, num) in nums.iter().enumerate() {
             if let Some(j) = m.get(&(target - num)) {
@@ -200,6 +200,7 @@ impl Solution {
     }
     // 217: https://leetcode-cn.com/problems/contains-duplicate/
     pub fn contains_duplicate(nums: Vec<i32>) -> bool {
+        use std::collections::HashSet;
         let set: HashSet<i32> = nums.clone().into_iter().collect();
         set.len() != nums.len()
     }
@@ -207,6 +208,7 @@ impl Solution {
     // slide-window suits here. although the algorithm seems more delicate but the implementation
     // is more complicated.
     pub fn contains_nearby_duplicate(nums: Vec<i32>, k: i32) -> bool {
+        use std::collections::HashMap;
         let mut m = HashMap::new();
         for i in 0..nums.len() {
             let num = nums[i];
@@ -312,6 +314,7 @@ impl NumArray {
 impl Solution {
     // 349: https://leetcode-cn.com/problems/intersection-of-two-arrays/
     pub fn intersection(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+        use std::collections::HashSet;
         nums1
             .into_iter()
             .collect::<HashSet<i32>>()
@@ -321,6 +324,7 @@ impl Solution {
     }
     // 350: https://leetcode-cn.com/problems/intersection-of-two-arrays-ii/
     pub fn intersect(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+        use std::collections::HashMap;
         fn frequence(nums: &Vec<i32>) -> HashMap<i32, usize> {
             nums.iter().fold(HashMap::new(), |mut m, num| {
                 *m.entry(*num).or_insert(0) += 1;
@@ -430,6 +434,7 @@ impl Solution {
     }
     //496: https://leetcode.cn/problems/next-greater-element-i/
     pub fn next_greater_element(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
+        use std::collections::HashMap;
         let mut nums2 = nums2;
         let mut map = HashMap::new();
         for i in 0..nums2.len() {
@@ -455,6 +460,7 @@ impl Solution {
     }
     // 500: https://leetcode.cn/problems/keyboard-row/
     pub fn find_words(words: Vec<String>) -> Vec<String> {
+        use std::collections::HashMap;
         let map: HashMap<char, i32> = vec![
             ('q', 0),
             ('w', 0),
@@ -504,6 +510,7 @@ impl Solution {
     }
     // 506: https://leetcode-cn.com/problems/relative-ranks/
     pub fn find_relative_ranks(nums: Vec<i32>) -> Vec<String> {
+        use std::collections::HashMap;
         let mut sorted = nums.clone();
         sorted.sort();
         sorted.reverse();
@@ -545,12 +552,14 @@ impl Solution {
     }
     // 575: https://leetcode-cn.com/problems/distribute-candies/
     pub fn distribute_candies(candies: Vec<i32>) -> i32 {
+        use std::collections::HashSet;
         let len = candies.len();
         let set: HashSet<_> = candies.into_iter().collect();
         set.len().min(len / 2) as i32
     }
     // 594: https://leetcode-cn.com/problems/longest-harmonious-subsequence/
     pub fn find_lhs(nums: Vec<i32>) -> i32 {
+        use std::collections::HashMap;
         let mut map = HashMap::new();
         for num in nums {
             *map.entry(num).or_insert(0) += 1;
@@ -575,6 +584,7 @@ impl Solution {
     }
     // 599: https://leetcode-cn.com/problems/minimum-index-sum-of-two-lists/
     pub fn find_restaurant(list1: Vec<String>, list2: Vec<String>) -> Vec<String> {
+        use std::collections::HashMap;
         let mut map = HashMap::new();
         let mut min = usize::MAX;
         let mut res = Vec::new();
@@ -718,6 +728,7 @@ impl Solution {
     }
     // 697: https://leetcode-cn.com/problems/degree-of-an-array/
     pub fn find_shortest_sub_array(nums: Vec<i32>) -> i32 {
+        use std::collections::HashMap;
         let mut map = HashMap::new();
         let mut list = Vec::new();
         let mut max = 0;
@@ -795,6 +806,7 @@ impl Solution {
     }
     // 720: https://leetcode-cn.com/problems/longest-word-in-dictionary/
     pub fn longest_word(words: Vec<String>) -> String {
+        use std::collections::HashSet;
         let mut words = words;
         words.sort();
         words
@@ -935,6 +947,7 @@ impl Solution {
     }
     // 804: https://leetcode.cn/problems/unique-morse-code-words/
     pub fn unique_morse_representations(words: Vec<String>) -> i32 {
+        use std::collections::HashSet;
         let code = vec![
             ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..",
             "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-",
@@ -1158,6 +1171,37 @@ impl Solution {
     }
     // 914: https://leetcode.cn/problems/x-of-a-kind-in-a-deck-of-cards/
     pub fn has_groups_size_x(deck: Vec<i32>) -> bool {
-        panic!("");
+        use std::collections::{HashMap, HashSet};
+        let cnts = deck
+            .into_iter()
+            .fold(HashMap::new(), |mut m, x| {
+                *m.entry(x).or_insert(0) += 1;
+                m
+            })
+            .into_iter()
+            .fold(HashSet::new(), |mut s, (_, count)| {
+                s.insert(count);
+                s
+            })
+            .into_iter()
+            .collect::<Vec<i32>>();
+        if cnts.len() == 1 && cnts[0] > 1 {
+            return true;
+        }
+        cnts.iter().fold(cnts[0], |res, &num| {
+            if res <= 1 || num == res {
+                return res;
+            }
+            fn gcd(i: i32, j: i32) -> i32 {
+                match (i, j) {
+                    (0, 0) => {
+                        panic!("panic");
+                    }
+                    (0, a) => a,
+                    _ => gcd(j % i, i),
+                }
+            }
+            gcd(res, num)
+        }) > 1
     }
 }
