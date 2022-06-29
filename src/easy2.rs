@@ -58,28 +58,44 @@ pub fn largest_sum_after_k_negations(nums: Vec<i32>, k: i32) -> i32 {
     nums.iter().sum()
 }
 // 1013: https://leetcode.cn/problems/partition-array-into-three-parts-with-equal-sum/
-pub fn can_three_parts_equal_sum(arr: Vec<i32>) -> bool {
-    let sum: i32 = arr.iter().sum();
+pub fn can_three_parts_equal_sum(nums: Vec<i32>) -> bool {
+    // simulation
+    let sum: i32 = nums.iter().sum();
     if sum % 3 != 0 {
         return false;
     }
-    let mut left = 0;
     let mut state = 0;
-    while left < arr.len() && state != sum / 3 {
-        state += arr[left];
-        left += 1;
-    }
-    if left > arr.len() - 3 {
-        return false;
-    }
-    let mut right = arr.len() - 1;
-    state = 0;
-    while right < arr.len() && state != sum / 3 {
-        state += arr[right];
-        right -= 1;
-    }
-    if right < 2 {
-        return false;
+    let mut count  = 0;
+    for i in 0..nums.len() {
+        if state < sum / 3 {
+            state += nums[i];
+        } else if state == sum / 3 {
+            state = 0;
+            count += 1;
+            if count == 2 {
+                break;
+            }
+        } else {
+            return false;
+        }
     }
     true
+}
+// 1018: https://leetcode.cn/problems/binary-prefix-divisible-by-5/
+pub fn prefixes_div_by5(nums: Vec<i32>) -> Vec<bool> {
+    // simulation
+    nums.iter()
+        .fold(
+            (Vec::with_capacity(nums.len()), 0),
+            |(mut res, mut num), &x| {
+                num = num * 2 + x;
+                res.push(num % 5 == 0);
+                (res, num)
+            },
+        )
+        .0
+}
+// 1030: https://leetcode.cn/problems/matrix-cells-in-distance-order/
+pub fn all_cells_dist_order(rows: i32, cols: i32, r_center: i32, c_center: i32) -> Vec<Vec<i32>> {
+    panic!("");
 }
