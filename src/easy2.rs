@@ -65,7 +65,7 @@ pub fn can_three_parts_equal_sum(nums: Vec<i32>) -> bool {
         return false;
     }
     let mut state = 0;
-    let mut count  = 0;
+    let mut count = 0;
     for i in 0..nums.len() {
         if state < sum / 3 {
             state += nums[i];
@@ -98,4 +98,12 @@ pub fn prefixes_div_by5(nums: Vec<i32>) -> Vec<bool> {
 // 1030: https://leetcode.cn/problems/matrix-cells-in-distance-order/
 pub fn all_cells_dist_order(rows: i32, cols: i32, r_center: i32, c_center: i32) -> Vec<Vec<i32>> {
     panic!("");
+}
+// 1037 https://leetcode.cn/problems/valid-boomerang/
+pub fn is_boomerang(p: Vec<Vec<i32>>) -> bool {
+    if p[0][0] != p[1][0] && p[1][0] != p[2[0] && p[0][0] != p[2][0]  && p[0][1] != p[1][1] && p[1][1] != p[2[1] && p[0][1] != p[2][1] && (p[0][0] - p[1][0]) * (p[0][1] - p[1][1]) == (p[0][0] - p[2][0]) * (p[0][1] - p[2][1]) {
+        false
+    } else {
+        true
+    }
 }
