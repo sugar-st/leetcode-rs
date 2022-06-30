@@ -99,11 +99,44 @@ pub fn prefixes_div_by5(nums: Vec<i32>) -> Vec<bool> {
 pub fn all_cells_dist_order(rows: i32, cols: i32, r_center: i32, c_center: i32) -> Vec<Vec<i32>> {
     panic!("");
 }
-// 1037 https://leetcode.cn/problems/valid-boomerang/
+// 1037: https://leetcode.cn/problems/valid-boomerang/
 pub fn is_boomerang(p: Vec<Vec<i32>>) -> bool {
-    if p[0][0] != p[1][0] && p[1][0] != p[2[0] && p[0][0] != p[2][0]  && p[0][1] != p[1][1] && p[1][1] != p[2[1] && p[0][1] != p[2][1] && (p[0][0] - p[1][0]) * (p[0][1] - p[1][1]) == (p[0][0] - p[2][0]) * (p[0][1] - p[2][1]) {
-        false
-    } else {
-        true
+    // math: vector(ab) x vector(bc) != 0
+    (p[0][0] - p[1][0]) * (p[0][1] - p[2][1]) != (p[0][0] - p[2][0]) * (p[0][1] - p[1][1])
+}
+// 1046: https://leetcode.cn/problems/last-stone-weight/
+pub fn last_stone_weight(stones: Vec<i32>) -> i32 {
+    panic!("")
+}
+// 1051: https://leetcode.cn/problems/height-checker/
+pub fn height_checker(heights: Vec<i32>) -> i32 {
+    // sort and compare
+    let mut sorted = heights.clone();
+    sorted.sort();
+    sorted.into_iter().zip(heights.into_iter()).fold(
+        0,
+        |res, (new, old)| {
+            if new != old {
+                res + 1
+            } else {
+                res
+            }
+        },
+    )
+}
+// 1089: https://leetcode.cn/problems/duplicate-zeros/
+pub fn duplicate_zeros(nums: &mut Vec<i32>) {
+    // simulation started from behind
+    let mut cnt = 0;
+    for ele in nums {
+        if *ele == 0 {
+            cnt += 2;
+        }
     }
+    for i in (0..nums.len()).rev() {
+        if nums[i] == 0 {
+            cnt -= 2;
+        }
+    }
+    panic!("");
 }
