@@ -1192,26 +1192,26 @@ pub fn has_groups_size_x(deck: Vec<i32>) -> bool {
         gcd(res, num)
     }) > 1
 }
-// Pending
 // 922: https://leetcode.cn/problems/sort-array-by-parity-ii/
 pub fn sort_array_by_parity_ii(nums: Vec<i32>) -> Vec<i32> {
+    // double pointers: swap until either of pointer reach the lenth;
     let mut nums = nums;
-    let mut next = 0;
-    while next < nums.len() && nums[next] % 2 == 0 {
-        next += 2;
-    }
-    for i in (1..nums.len()).step_by(2) {
-        if nums[i] % 2 == 0 {
-            let tmp = nums[i];
-            nums[i] = nums[next];
-            nums[next] = tmp;
-            next += 2;
+    let (mut i, mut j) = (0, 1);
+    while i < nums.len() && j < nums.len() {
+        if nums[i] % 2 != 0 {
+            let tmp = nums[j];
+            nums[j] = nums[i];
+            nums[i] = tmp;
+            j += 2;
+        } else {
+            i += 2;
         }
     }
     nums
 }
 // 929: https://leetcode.cn/problems/unique-email-addresses/solution/
 pub fn num_unique_emails(emails: Vec<String>) -> i32 {
+    // simplify emails and count the length of set
     use std::collections::HashSet;
     emails
         .iter()
@@ -1232,16 +1232,42 @@ pub fn num_unique_emails(emails: Vec<String>) -> i32 {
 }
 // 937: https://leetcode.cn/problems/reorder-data-in-log-files/
 pub fn reorder_log_files(logs: Vec<String>) -> Vec<String> {
-    panic!("");
+    // custom sort
+    fn is_digital(s: &str) -> bool {
+        for &b in s.as_bytes() {
+            if b != b' ' && !(b >= b'0' && b <= b'9') {
+                return false;
+            }
+        }
+        true
+    }
+    let mut logs = logs;
+    use std::cmp::Ordering;
+    logs.sort_by(|a, b| {
+        let (a1, a2) = a.split_once(' ').unwrap();
+        let (b1, b2) = b.split_once(' ').unwrap();
+        return match (is_digital(a2), is_digital(b2)) {
+            (true, true) => Ordering::Equal,
+            (true, false) => Ordering::Greater,
+            (false, true) => Ordering::Less,
+            (false, false) => match a2.partial_cmp(b2).unwrap() {
+                Ordering::Equal => a1.partial_cmp(b1).unwrap(),
+                order => order,
+            },
+        };
+    });
+    logs
 }
 // 941: https://leetcode.cn/problems/valid-mountain-array/
 pub fn valid_mountain_array(arr: Vec<i32>) -> bool {
+    // if the arr is not a mountain, there must be a point where the curve like '-' or 'V' rather
+    // than '/', '\' or '^'
     let len = arr.len();
-    if !(arr[0] < arr[1] && arr[len - 2] > arr[len - 1]) {
+    if len < 3 || !(arr[0] < arr[1] && arr[len - 2] > arr[len - 1]) {
         return false;
     }
     for i in 1..(len - 1) {
-        if arr[i] == arr[i - 1] || arr[i] < arr[i - 1] && arr[i] > arr[i + 1] {
+        if arr[i] == arr[i - 1] || arr[i] <= arr[i - 1] && arr[i] <= arr[i + 1] {
             return false;
         }
     }
@@ -1249,61 +1275,170 @@ pub fn valid_mountain_array(arr: Vec<i32>) -> bool {
 }
 // 942: https://leetcode.cn/problems/di-string-match/
 pub fn di_string_match(s: String) -> Vec<i32> {
-    panic!("");
+    // double pointers, greedy
+    let (mut start, mut end) = (0, s.len() as i32);
+    let mut res = Vec::with_capacity(s.len());
+    for c in s.as_bytes() {
+        match c {
+            b'I' => {
+                res.push(start);
+                start += 1;
+            }
+            b'D' => {
+                res.push(end);
+                end -= 1;
+            }
+            _ => panic!("invalid"),
+        }
+    }
+    res.push(start);
+    res
 }
 // 944: https://leetcode.cn/problems/delete-columns-to-make-sorted/
 pub fn min_deletion_size(strs: Vec<String>) -> i32 {
-    panic!("");
-}
-// 953: https://leetcode.cn/problems/verifying-an-alien-dictionary/
-pub fn is_alien_sorted(words: Vec<String>, order: String) -> bool {
-    panic!("");
-}
-// 961: https://leetcode.cn/problems/n-repeated-element-in-size-2n-array/
-pub fn repeated_n_times(nums: Vec<i32>) -> i32 {
-    let mut cnt = 0;
+    // simulation
     let mut res = 0;
-    for i in 0..nums.len() {
-        if cnt == 0 {
-            res = nums[i];
-        }
-        if nums[i] == res {
-            cnt += 1;
-        } else {
-            cnt -= 1;
+    for i in 0..strs[0].len() {
+        for j in 1..strs.len() {
+            if strs[j].as_bytes()[i] < strs[j - 1].as_bytes()[i] {
+                res += 1;
+                break;
+            }
         }
     }
     res
 }
+// 953: https://leetcode.cn/problems/verifying-an-alien-dictionary/
+pub fn is_alien_sorted(words: Vec<String>, order: String) -> bool {
+    // build map and check one by one
+    let dict = order
+        .as_bytes()
+        .into_iter()
+        .enumerate()
+        .fold(vec![0; 26], |mut dict, (idx, &c)| {
+            dict[(c - b'a') as usize] = idx;
+            dict
+        });
+    for i in 1..words.len() {
+        let mut flag = 0;
+        {
+            let cur = words[i].as_bytes();
+            let pre = words[i - 1].as_bytes();
+            let mut i = 0;
+            use std::cmp::Ordering;
+            while i < cur.len() && i < pre.len() {
+                match dict[(cur[i] - b'a') as usize]
+                    .partial_cmp(&dict[(pre[i] - b'a') as usize])
+                    .unwrap()
+                {
+                    Ordering::Less => {
+                        flag = -1;
+                        break;
+                    }
+                    Ordering::Greater => {
+                        flag = 1;
+                        break;
+                    }
+                    _ => {}
+                }
+                i += 1;
+            }
+        }
+        if flag == 0 && words[i - 1].len() > words[i].len() || flag == -1 {
+            return false;
+        }
+    }
+    true
+}
+// 961: https://leetcode.cn/problems/n-repeated-element-in-size-2n-array/
+pub fn repeated_n_times(nums: Vec<i32>) -> i32 {
+    // hashset
+    let mut s = std::collections::HashSet::new();
+    for num in nums {
+        if s.contains(&num) {
+            return num;
+        } else {
+            s.insert(num);
+        }
+    }
+    panic!("invalid");
+}
 // 976: https://leetcode.cn/problems/largest-perimeter-triangle/
 pub fn largest_perimeter(nums: Vec<i32>) -> i32 {
-    panic!("");
+    // greedy
+    let mut nums = nums;
+    nums.sort();
+    for i in (2..nums.len()).rev() {
+        if nums[i - 1] + nums[i - 2] > nums[i] {
+            return nums[i - 1] + nums[i - 2] + nums[i];
+        }
+    }
+    0
 }
 // 977: https://leetcode.cn/problems/squares-of-a-sorted-array/
 pub fn sorted_squares(nums: Vec<i32>) -> Vec<i32> {
-    let mut nums = nums;
-    nums.sort_by(|a, b| a.abs().partial_cmp(&b.abs()).unwrap());
-    nums.into_iter().map(|x| x * x).collect()
+    // double pointers
+    let mut last = nums.len() - 1;
+    let mut res = vec![0; last + 1];
+    let (mut l, mut r) = (0, last);
+    while last < nums.len() {
+        if nums[l].abs() > nums[r].abs() {
+            res[last] = nums[l] * nums[l];
+            l += 1;
+        } else {
+            res[last] = nums[r] * nums[r];
+            r -= 1;
+        }
+        last -= 1;
+    }
+    res
 }
 // 989: https://leetcode.cn/problems/add-to-array-form-of-integer/
 pub fn add_to_array_form(num: Vec<i32>, k: i32) -> Vec<i32> {
     let mut num = num;
-    for i in (0..num.len()).rev() {}
-    panic!("");
+    *num.last_mut().unwrap() += k;
+    for i in (0..num.len() - 1).rev() {
+        if num[i + 1] <= 9 {
+            break;
+        }
+        num[i] += num[i + 1] / 10;
+        num[i + 1] %= 10;
+    }
+    if num[0] < 10 {
+        num
+    } else {
+        let mut res = Vec::with_capacity(num.len().max(5));
+        res.push(num[0] / 10);
+        num[0] %= 10;
+        let mut cur = 0;
+        while res[cur] >= 10 {
+            res.push(res[cur] / 10);
+            res[cur] %= 10;
+            cur += 1;
+        }
+        res.reverse();
+        res.append(&mut num);
+        res
+    }
 }
 // 997: https://leetcode.cn/problems/find-the-town-judge/
 pub fn find_judge(n: i32, trust: Vec<Vec<i32>>) -> i32 {
-    use std::collections::HashMap;
-    let m = trust.iter().fold(HashMap::new(), |mut m, trust| {
-        *m.entry(trust[1]).or_insert(0) += 1;
-        m
-    });
-    for (k, v) in m {
-        if v == n - 1 {
-            return k;
+    if trust.len() == 0 && n == 1 {
+        return 1;
+    }
+    let m = trust
+        .into_iter()
+        .fold(vec![(0, 0); n as usize + 1], |mut m, trust| {
+            m[trust[1] as usize].0 += 1;
+            m[trust[0] as usize].1 += 1;
+            m
+        });
+    for i in 1..m.len() {
+        if m[i] == (n - 1, 0) {
+            return i as i32;
         }
     }
-    panic!("not found");
+    -1
 }
 // 999: https://leetcode.cn/problems/available-captures-for-rook/
 pub fn num_rook_captures(board: Vec<Vec<char>>) -> i32 {
@@ -1324,6 +1459,7 @@ pub fn num_rook_captures(board: Vec<Vec<char>>) -> i32 {
         }
         if board[i][r.1] == 'p' {
             res += 1;
+            break;
         }
     }
     for i in (r.0 + 1)..row {
@@ -1332,6 +1468,7 @@ pub fn num_rook_captures(board: Vec<Vec<char>>) -> i32 {
         }
         if board[i][r.1] == 'p' {
             res += 1;
+            break;
         }
     }
     for j in (0..r.1).rev() {
@@ -1340,6 +1477,7 @@ pub fn num_rook_captures(board: Vec<Vec<char>>) -> i32 {
         }
         if board[r.0][j] == 'p' {
             res += 1;
+            break;
         }
     }
     for j in (r.1 + 1)..col {
@@ -1348,6 +1486,7 @@ pub fn num_rook_captures(board: Vec<Vec<char>>) -> i32 {
         }
         if board[r.0][j] == 'p' {
             res += 1;
+            break;
         }
     }
     res
