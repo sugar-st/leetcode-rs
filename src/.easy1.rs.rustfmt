@@ -38,60 +38,6 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     }
     panic!("not found");
 }
-// 9: https://leetcode.cn/problems/palindrome-number/
-pub fn is_palindrome(x: i32) -> bool {
-    if x < 0 {
-        return false;
-    }
-    let mut cpy = x as i64;
-    let mut dest = 0;
-    while cpy > 0 {
-        let digit = cpy % 10;
-        cpy /= 10;
-        dest = dest * 10 + digit;
-    }
-    x == dest as i32
-}
-// 13: https://leetcode.cn/problems/roman-to-integer/
-pub fn roman_to_int(s: String) -> i32 {
-    let s = s.as_bytes();
-    let mut i = 0;
-    let mut res = 0;
-    let value = |a: u8| match a {
-        b'I' => 1,
-        b'V' => 5,
-        b'X' => 10,
-        b'L' => 50,
-        b'C' => 100,
-        b'D' => 500,
-        b'M' => 1000,
-        _ => 0,
-    };
-    let template = |a: u8, b: u8, c: u8, i: &mut usize| {
-        let res;
-        if *i < s.len() - 1 && (s[*i + 1] == b || s[*i + 1] == c) {
-            if s[*i + 1] == b {
-                res = value(b) - value(a);
-            } else {
-                res = value(c) - value(a);
-            }
-            *i += 1;
-        } else {
-            res = value(a);
-        }
-        res
-    };
-    while i < s.len() {
-        match s[i] {
-            b'I' => res += template(b'I', b'V', b'X', &mut i),
-            b'X' => res += template(b'X', b'L', b'C', &mut i),
-            b'C' => res += template(b'C', b'D', b'M', &mut i),
-            a => res += value(a),
-        }
-        i += 1;
-    }
-    res
-}
 // 26: https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/
 pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
     if nums.len() == 0 {
