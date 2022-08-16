@@ -92,6 +92,48 @@ pub fn roman_to_int(s: String) -> i32 {
     }
     res
 }
+// 14: https://leetcode.cn/problems/longest-common-prefix/
+// find the max str and min str, and get common prefix between them
+pub fn longest_common_prefix(strs: Vec<String>) -> String {
+    strs.iter()
+        .max()
+        .unwrap()
+        .chars()
+        .zip(strs.iter().min().unwrap().chars())
+        .take_while(|x| x.0 == x.1)
+        .map(|x| x.0)
+        .collect()
+}
+// 20: https://leetcode.cn/problems/valid-parentheses/
+pub fn is_valid(s: String) -> bool {
+    if s.len() % 2 != 0 {
+        return false;
+    }
+    let mut stack = vec!['a'];
+
+    for c in s.chars() {
+        match c {
+            '(' | '[' | '{' => stack.push(c),
+            ')' => {
+                if stack.pop().unwrap() != '(' {
+                    return false;
+                }
+            }
+            ']' => {
+                if stack.pop().unwrap() != '[' {
+                    return false;
+                }
+            }
+            '}' => {
+                if stack.pop().unwrap() != '{' {
+                    return false;
+                }
+            }
+            _ => return false,
+        }
+    }
+    stack.len() == 1
+}
 // 26: https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/
 pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
     if nums.len() == 0 {
