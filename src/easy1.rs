@@ -24,6 +24,19 @@ impl TreeNode {
     }
 }
 
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+}
+
 // 1: https://leetcode-cn.com/problems/two-sum/
 pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
     use std::collections::HashMap;
@@ -133,6 +146,38 @@ pub fn is_valid(s: String) -> bool {
         }
     }
     stack.len() == 1
+}
+// 21: https://leetcode.cn/problems/merge-two-sorted-lists/
+pub fn merge_two_lists(
+    mut list1: Option<Box<ListNode>>,
+    mut list2: Option<Box<ListNode>>,
+) -> Option<Box<ListNode>> {
+    let mut dummy = Some(Box::new(ListNode::new(0)));
+    let mut curr = &mut dummy;
+    loop {
+        match (&list1, &list2) {
+            (Some(v1), Some(v2)) => {
+                if v1.val < v2.val {
+                    curr.as_mut().unwrap().next = Some(v1.to_owned());
+                    list1 = list1.unwrap().next;
+                } else {
+                    curr.as_mut().unwrap().next = Some(v2.to_owned());
+                    list2 = list2.unwrap().next;
+                }
+                curr = &mut curr.as_mut().unwrap().next;
+            }
+            (None, Some(v2)) => {
+                curr.as_mut().unwrap().next = Some(v2.to_owned());
+                break;
+            }
+            (Some(v1), None) => {
+                curr.as_mut().unwrap().next = Some(v1.to_owned());
+                break;
+            }
+            (None, None) => break,
+        }
+    }
+    dummy.unwrap().next
 }
 // 26: https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/
 pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
