@@ -261,6 +261,44 @@ pub fn max_sub_array(nums: Vec<i32>) -> i32 {
     }
     return res;
 }
+// 58: https://leetcode.cn/problems/length-of-last-word/
+pub fn length_of_last_word(s: String) -> i32 {
+    s.chars()
+        .rev()
+        .skip_while(|x| x.is_whitespace())
+        .take_while(|x| !x.is_whitespace())
+        .count() as i32
+}
+// 67: https://leetcode.cn/problems/add-binary/
+pub fn add_binary(a: String, b: String) -> String {
+    let mut carry = 0;
+    let l = a.len().max(b.len());
+    let mut a = a.as_bytes().iter().rev();
+    let mut b = b.as_bytes().iter().rev();
+    let mut res = vec![b'0'; l];
+    for i in 1..=l {
+        let x = a.next().unwrap_or(&b'0');
+        let y = b.next().unwrap_or(&b'0');
+        res[l - i] = x + y - b'0' + carry;
+        match res[l - i] {
+            b'3' => {
+                res[l - i] = b'1';
+                carry = 1;
+            }
+            b'2' => {
+                res[l - i] = b'0';
+                carry = 1;
+            }
+            _ => {
+                carry = 0;
+            }
+        }
+    }
+    if carry == 1 {
+        res.insert(0, b'1');
+    }
+    String::from_utf8(res).unwrap()
+}
 // 66: https://leetcode-cn.com/problems/plus-one/
 pub fn plus_one(digits: Vec<i32>) -> Vec<i32> {
     let mut digits = digits;
