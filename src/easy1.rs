@@ -208,6 +208,30 @@ pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
     }
     i as i32
 }
+// 29: https://leetcode.cn/problems/implement-strstr/
+pub fn str_str(haystack: String, needle: String) -> i32 {
+    if haystack.len() < needle.len() {
+        return -1;
+    }
+    let mut haystack = haystack.as_bytes();
+    let needle = needle.as_bytes();
+    for i in 0..(haystack.len() - needle.len() + 1) {
+        if haystack
+            .iter()
+            .zip(needle.iter())
+            .take_while(|x| x.0 == x.1)
+            .count()
+            == needle.len()
+        {
+            return i as i32;
+        }
+        if haystack.len() == 0 {
+            break;
+        }
+        haystack = &haystack[1..];
+    }
+    -1
+}
 // 35: https://leetcode-cn.com/problems/search-insert-position/
 pub fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
     let (mut i, mut j) = (0, nums.len());
