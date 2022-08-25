@@ -269,6 +269,23 @@ pub fn length_of_last_word(s: String) -> i32 {
         .take_while(|x| !x.is_whitespace())
         .count() as i32
 }
+// 66: https://leetcode-cn.com/problems/plus-one/
+pub fn plus_one(digits: Vec<i32>) -> Vec<i32> {
+    let mut digits = digits;
+    let mut carry = true;
+    for digit in digits.iter_mut().rev() {
+        if carry {
+            *digit = (*digit + 1) % 10;
+            carry = *digit == 0 && carry;
+        } else {
+            break;
+        }
+    }
+    if carry {
+        digits.insert(0, 1);
+    }
+    digits
+}
 // 67: https://leetcode.cn/problems/add-binary/
 pub fn add_binary(a: String, b: String) -> String {
     let mut carry = 0;
@@ -299,22 +316,33 @@ pub fn add_binary(a: String, b: String) -> String {
     }
     String::from_utf8(res).unwrap()
 }
-// 66: https://leetcode-cn.com/problems/plus-one/
-pub fn plus_one(digits: Vec<i32>) -> Vec<i32> {
-    let mut digits = digits;
-    let mut carry = true;
-    for digit in digits.iter_mut().rev() {
-        if carry {
-            *digit = (*digit + 1) % 10;
-            carry = *digit == 0 && carry;
+// 69: https://leetcode.cn/problems/sqrtx/
+pub fn my_sqrt(x: i32) -> i32 {
+    let x = x as i64;
+    let (mut left, mut right) = (0, x);
+    while left <= right {
+        let mid = left + (right - left) / 2;
+        let square = mid * mid;
+        if square == x || square < x && (mid + 1) * (mid + 1) > x {
+            return mid as i32;
+        } else if square > x {
+            right = mid;
         } else {
-            break;
+            left = mid + 1;
         }
     }
-    if carry {
-        digits.insert(0, 1);
+    panic!("should't reach here")
+}
+// 70: https://leetcode.cn/problems/climbing-stairs/
+pub fn climb_stairs(n: i32) -> i32 {
+    let mut n = n;
+    let mut a = vec![1, 1];
+    while n != 1 {
+        a[1] = a[0] + a[1];
+        a[0] = a[1] - a[0];
+        n -= 1;
     }
-    digits
+    a[1]
 }
 // 88: https://leetcode-cn.com/problems/merge-sorted-array/
 pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
