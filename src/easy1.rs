@@ -565,6 +565,27 @@ pub fn intersect(nums1: Vec<i32>, nums2: Vec<i32>) -> Vec<i32> {
         res
     })
 }
+// 409: https://leetcode.cn/problems/longest-palindrome/
+pub fn longest_palindrome(s: String) -> i32 {
+    let s = s.as_bytes().iter();
+    use std::collections::HashMap;
+    let mut has_odd = false;
+    s.fold(HashMap::new(), |mut m, x| {
+        *m.entry(x).or_insert(0) += 1;
+        m
+    })
+    .iter()
+    .fold(0, |res, (_, v)| {
+        if v % 2 == 0 {
+            res + v
+        } else if has_odd {
+            res + v - 1
+        } else {
+            has_odd = true;
+            res + v
+        }
+    })
+}
 // 414: https://leetcode-cn.com/problems/third-maximum-number/
 pub fn third_max(nums: Vec<i32>) -> i32 {
     let mut seq = Vec::with_capacity(4);
