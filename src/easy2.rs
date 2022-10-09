@@ -469,3 +469,24 @@ pub fn minimum_cost(mut cost: Vec<i32>) -> i32 {
         .enumerate()
         .fold(0, |res, (idx, x)| if idx % 3 != 2 { res + x } else { res })
 }
+// 2160: https://leetcode.cn/problems/minimum-sum-of-four-digit-number-after-splitting-digits/
+pub fn minimum_sum(num: i32) -> i32 {
+    let mut digits = Vec::with_capacity(4);
+
+    let mut state = 1;
+    while state < 10000 {
+        digits.push(num / state % 10);
+        state *= 10;
+    }
+    digits.sort();
+
+    let (mut i, mut j) = (0, 0);
+    for d in digits {
+        if i < j {
+            i = i * 10 + d;
+        } else {
+            j = j * 10 + d;
+        }
+    }
+    i + j
+}
