@@ -948,6 +948,31 @@ pub fn find_length_of_lcis(nums: Vec<i32>) -> i32 {
     }
     res
 }
+// 680: https://leetcode.cn/problems/valid-palindrome-ii/
+pub fn valid_palindrome(s: String) -> bool {
+    let s = s.as_bytes();
+
+    let is_palindrome = |mut i: usize, mut j: usize| -> bool {
+        while i < j {
+            if s[i] != s[j] {
+                return false;
+            }
+            i += 1;
+            j -= 1;
+        }
+        true
+    };
+    let (mut i, mut j) = (0, s.len() - 1);
+    while i < j {
+        if s[i] != s[j] {
+            return is_palindrome(i + 1, j) || is_palindrome(i, j - 1);
+        } else {
+            i += 1;
+            j -= 1;
+        }
+    }
+    true
+}
 // 682: https://leetcode-cn.com/problems/baseball-game/
 pub fn cal_points(ops: Vec<String>) -> i32 {
     ops.iter()
