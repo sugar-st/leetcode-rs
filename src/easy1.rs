@@ -617,7 +617,7 @@ pub fn find_content_children(mut g: Vec<i32>, mut s: Vec<i32>) -> i32 {
     while i < g.len() && j < s.len() {
         if g[i] <= s[j] {
             res += 1;
-            i += 1; 
+            i += 1;
         }
         j += 1;
     }
@@ -844,20 +844,21 @@ pub fn find_restaurant(list1: Vec<String>, list2: Vec<String>) -> Vec<String> {
     res
 }
 // 605: https://leetcode-cn.com/problems/can-place-flowers/
-pub fn can_place_flowers(flowerbed: Vec<i32>, n: i32) -> bool {
-    let mut flowerbed = flowerbed;
-    let mut max = 0;
-    for i in 0..flowerbed.len() {
+pub fn can_place_flowers(flowerbed: Vec<i32>, mut n: i32) -> bool {
+    let mut i = 0;
+    while i < flowerbed.len() && n != 0 {
         if flowerbed[i] == 0 {
-            if (i == 0 || i > 0 && flowerbed[i - 1] == 0)
-                && (i == flowerbed.len() - 1 || flowerbed[i + 1] == 0)
-            {
-                flowerbed[i] = 1;
-                max += 1;
+            if i + 1 == flowerbed.len() || flowerbed[i + 1] == 0 {
+                n -= 1;
+                i += 2;
+            } else {
+                i += 1;
             }
+        } else {
+            i += 2;
         }
     }
-    n <= max
+    n == 0
 }
 // 628: https://leetcode-cn.com/problems/maximum-product-of-three-numbers/
 pub fn maximum_product(nums: Vec<i32>) -> i32 {
