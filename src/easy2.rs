@@ -380,3 +380,18 @@ pub fn min_subsequence(mut nums: Vec<i32>) -> Vec<i32> {
     }
     res
 }
+// 1710: https://leetcode.cn/problems/maximum-units-on-a-truck/
+pub fn maximum_units(mut box_types: Vec<Vec<i32>>, mut truck_size: i32) -> i32 {
+    box_types.sort_by(|a, b| b[1].partial_cmp(&a[1]).unwrap());
+    let mut res = 0;
+    let mut i = 0;
+    while truck_size > 0 && i < box_types.len() {
+        res += box_types[i][1];
+        box_types[i][0] -= 1;
+        truck_size -= 1;
+        if box_types[i][0] == 0 {
+            i += 1;
+        }
+    }
+    res
+}
