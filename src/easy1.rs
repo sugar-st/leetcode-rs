@@ -1299,9 +1299,7 @@ pub fn lemonade_change(bills: Vec<i32>) -> bool {
                     five -= 3;
                 }
             }
-            _ => {
-                panic!("error");
-            }
+            _ => {}
         }
         if five < 0 || ten < 0 {
             return false;
@@ -1544,7 +1542,6 @@ pub fn valid_mountain_array(arr: Vec<i32>) -> bool {
 }
 // 942: https://leetcode.cn/problems/di-string-match/
 pub fn di_string_match(s: String) -> Vec<i32> {
-    // double pointers, greedy
     let (mut start, mut end) = (0, s.len() as i32);
     let mut res = Vec::with_capacity(s.len());
     for c in s.as_bytes() {
@@ -1621,7 +1618,6 @@ pub fn is_alien_sorted(words: Vec<String>, order: String) -> bool {
 }
 // 961: https://leetcode.cn/problems/n-repeated-element-in-size-2n-array/
 pub fn repeated_n_times(nums: Vec<i32>) -> i32 {
-    // hashset
     let mut s = std::collections::HashSet::new();
     for num in nums {
         if s.contains(&num) {
@@ -1633,9 +1629,7 @@ pub fn repeated_n_times(nums: Vec<i32>) -> i32 {
     panic!("invalid");
 }
 // 976: https://leetcode.cn/problems/largest-perimeter-triangle/
-pub fn largest_perimeter(nums: Vec<i32>) -> i32 {
-    // greedy
-    let mut nums = nums;
+pub fn largest_perimeter(mut nums: Vec<i32>) -> i32 {
     nums.sort();
     for i in (2..nums.len()).rev() {
         if nums[i - 1] + nums[i - 2] > nums[i] {
@@ -1646,7 +1640,6 @@ pub fn largest_perimeter(nums: Vec<i32>) -> i32 {
 }
 // 977: https://leetcode.cn/problems/squares-of-a-sorted-array/
 pub fn sorted_squares(nums: Vec<i32>) -> Vec<i32> {
-    // double pointers
     let mut last = nums.len() - 1;
     let mut res = vec![0; last + 1];
     let (mut l, mut r) = (0, last);
