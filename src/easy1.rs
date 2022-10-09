@@ -775,14 +775,9 @@ pub fn find_relative_ranks(nums: Vec<i32>) -> Vec<String> {
     res
 }
 // 561: https://leetcode-cn.com/problems/array-partition-i/
-pub fn array_pair_sum(nums: Vec<i32>) -> i32 {
-    let mut nums = nums;
+pub fn array_pair_sum(mut nums: Vec<i32>) -> i32 {
     nums.sort();
-    let mut res = 0;
-    for &num in nums.iter().step_by(2) {
-        res += num;
-    }
-    res
+    nums.iter().step_by(2).sum()
 }
 // 566: https://leetcode-cn.com/problems/reshape-the-matrix/
 pub fn matrix_reshape(nums: Vec<Vec<i32>>, r: i32, c: i32) -> Vec<Vec<i32>> {
