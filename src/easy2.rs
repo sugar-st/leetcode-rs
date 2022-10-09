@@ -57,7 +57,7 @@ pub fn largest_sum_after_k_negations(nums: Vec<i32>, k: i32) -> i32 {
 // 1013: https://leetcode.cn/problems/partition-array-into-three-parts-with-equal-sum/
 pub fn can_three_parts_equal_sum(mut nums: Vec<i32>) -> bool {
     for i in 1..nums.len() {
-        nums[i] = nums[i-1] + nums[i];
+        nums[i] = nums[i - 1] + nums[i];
     }
     let mut sum = *nums.last().unwrap();
     if sum % 3 != 0 {
@@ -267,8 +267,6 @@ pub fn unique_occurrences(arr: Vec<i32>) -> bool {
 }
 // 1217: https://leetcode.cn/problems/minimum-cost-to-move-chips-to-the-same-position/
 pub fn min_cost_to_move_chips(position: Vec<i32>) -> i32 {
-    // all chips in even indexes can be moved into a same index without cost
-    // same thing happens to chips in odd indexes
     let (even, odd) =
         position.into_iter().fold(
             (0, 0),
@@ -281,6 +279,23 @@ pub fn min_cost_to_move_chips(position: Vec<i32>) -> i32 {
             },
         );
     even.min(odd)
+}
+// 1221: https://leetcode.cn/problems/split-a-string-in-balanced-strings/
+pub fn balanced_string_split(s: String) -> i32 {
+    let (mut l, mut r) = (0, 0);
+    let mut res = 0;
+    let s = s.as_bytes();
+    for i in 0..s.len() {
+        if s[i] == b'R' {
+            r += 1;
+        } else {
+            l += 1;
+        }
+        if r == l {
+            res += 1;
+        }
+    }
+    res
 }
 // 1232: https://leetcode.cn/problems/check-if-it-is-a-straight-line/
 pub fn check_straight_line(c: Vec<Vec<i32>>) -> bool {
