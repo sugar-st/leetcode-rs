@@ -462,3 +462,10 @@ pub fn max_distance(colors: Vec<i32>) -> i32 {
     }
     distance as i32
 }
+// 2144: https://leetcode.cn/problems/minimum-cost-of-buying-candies-with-discount/
+pub fn minimum_cost(mut cost: Vec<i32>) -> i32 {
+    cost.sort_by(|a, b| b.partial_cmp(&a).unwrap());
+    cost.iter()
+        .enumerate()
+        .fold(0, |res, (idx, x)| if idx % 3 != 2 { res + x } else { res })
+}
