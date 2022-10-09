@@ -442,7 +442,23 @@ pub fn minimum_moves(s: String) -> i32 {
         } else {
             i += 1;
         }
-        
     }
     res
+}
+// 2078: https://leetcode.cn/problems/two-furthest-houses-with-different-colors/
+pub fn max_distance(colors: Vec<i32>) -> i32 {
+    let len = colors.len();
+    let mut distance = 0;
+    let mut i = 0;
+    while i < len && len - i > distance {
+        let mut j = len - 1;
+        while j > i && colors[i] == colors[j] {
+            j -= 1;
+        }
+        if j > i {
+            distance = distance.max(j - i);
+        }
+        i += 1;
+    }
+    distance as i32
 }
