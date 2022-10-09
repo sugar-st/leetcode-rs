@@ -353,3 +353,15 @@ pub fn shift_grid(mut grid: Vec<Vec<i32>>, k: i32) -> Vec<Vec<i32>> {
     }
     grid
 }
+// 1323: https://leetcode.cn/problems/maximum-69-number/
+pub fn maximum69_number(num: i32) -> i32 {
+    let mut res = 0;
+    let mut state = 1;
+    while state < num {
+        if (num / state) % 10 == 6 {
+            res = state;
+        }
+        state *= 10;
+    }
+    res * 3 + num
+}
