@@ -365,3 +365,18 @@ pub fn maximum69_number(num: i32) -> i32 {
     }
     res * 3 + num
 }
+// 1403: https://leetcode.cn/problems/minimum-subsequence-in-non-increasing-order/
+pub fn min_subsequence(mut nums: Vec<i32>) -> Vec<i32> {
+    nums.sort();
+    let sum = nums.iter().sum::<i32>() / 2;
+    let mut res = Vec::with_capacity(nums.len());
+    let mut state = 0;
+    for i in (0..nums.len()).rev() {
+        res.push(nums[i]);
+        state += nums[i];
+        if state > sum {
+            return res;
+        }
+    }
+    res
+}
