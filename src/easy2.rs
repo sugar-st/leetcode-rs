@@ -417,3 +417,16 @@ pub fn largest_odd_number(num: String) -> String {
     }
     String::from("")
 }
+// 1974: https://leetcode.cn/problems/minimum-time-to-type-word-using-special-typewriter/
+pub fn min_time_to_type(word: String) -> i32 {
+    let mut prev = b'a' as i32;
+    let mut res = 0;
+    for &c in word.as_bytes() {
+        let c = c as i32;
+        let gap = (c - prev).abs();
+        let gap = gap.min(26 - gap);
+        res += gap + 1;
+        prev = c;
+    }
+    res
+}
