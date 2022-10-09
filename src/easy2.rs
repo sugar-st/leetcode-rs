@@ -407,3 +407,13 @@ pub fn min_operations(mut nums: Vec<i32>) -> i32 {
     }
     res
 }
+// 1903: https://leetcode.cn/problems/largest-odd-number-in-string/
+pub fn largest_odd_number(num: String) -> String {
+    let bytes = num.as_bytes();
+    for i in (0..bytes.len()).rev() {
+        if (bytes[i] - b'0') % 2 != 0 {
+            return num[0..i + 1].to_string();
+        }
+    }
+    String::from("")
+}
