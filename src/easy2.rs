@@ -33,9 +33,6 @@ pub fn common_chars(words: Vec<String>) -> Vec<String> {
 }
 // 1005: https://leetcode.cn/problems/maximize-sum-of-array-after-k-negations/
 pub fn largest_sum_after_k_negations(nums: Vec<i32>, k: i32) -> i32 {
-    // 1. flip negative nums as many as possible
-    // 2. flip the minimun abs value until the count is used up
-    // 3. sum up the result
     let mut nums = nums;
     let mut k = k as usize;
     nums.sort();
@@ -58,23 +55,23 @@ pub fn largest_sum_after_k_negations(nums: Vec<i32>, k: i32) -> i32 {
     nums.iter().sum()
 }
 // 1013: https://leetcode.cn/problems/partition-array-into-three-parts-with-equal-sum/
-pub fn can_three_parts_equal_sum(nums: Vec<i32>) -> bool {
-    // simulation
-    let sum: i32 = nums.iter().sum();
+pub fn can_three_parts_equal_sum(mut nums: Vec<i32>) -> bool {
+    for i in 1..nums.len() {
+        nums[i] = nums[i-1] + nums[i];
+    }
+    let mut sum = *nums.last().unwrap();
     if sum % 3 != 0 {
         return false;
     }
-    let mut state = nums[0]; // at least one element to avoid bug when sum == 0
+    sum /= 3;
     let mut count = 0;
-    for i in 1..nums.len() {
-        if state == sum / 3 {
-            state = nums[i];
+    for i in 0..nums.len() {
+        if nums[i] == sum {
+            sum <<= 1;
             count += 1;
-            if count == 2 {
+            if count == 2 && i != nums.len() - 1 {
                 return true;
             }
-        } else {
-            state += nums[i];
         }
     }
     false
