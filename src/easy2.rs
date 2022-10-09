@@ -395,3 +395,15 @@ pub fn maximum_units(mut box_types: Vec<Vec<i32>>, mut truck_size: i32) -> i32 {
     }
     res
 }
+// 1827: https://leetcode.cn/problems/minimum-operations-to-make-the-array-increasing/
+pub fn min_operations(mut nums: Vec<i32>) -> i32 {
+    let mut res = 0;
+    for i in 1..nums.len() {
+        let increment = nums[i - 1] - nums[i] + 1;
+        if increment > 0 {
+            res += increment;
+            nums[i] = nums[i - 1] + 1;
+        }
+    }
+    res
+}
