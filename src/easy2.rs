@@ -490,3 +490,26 @@ pub fn minimum_sum(num: i32) -> i32 {
     }
     i + j
 }
+// 2224: https://leetcode.cn/problems/minimum-number-of-operations-to-convert-time/
+pub fn convert_time(cur: String, cor: String) -> i32 {
+    fn time_to_minutes(time: &[u8]) -> i32 {
+        let h = ((time[0] - b'0') * 10 + (time[1] - b'0')) as i32;
+        let m = ((time[3] - b'0') * 10 + (time[4] - b'0')) as i32;
+        h * 60 + m
+    }
+    let mut res = 0;
+    let mut gap = time_to_minutes(cor.as_bytes()) - time_to_minutes(cur.as_bytes());
+    if gap >= 60 {
+        res += gap / 60;
+        gap %= 60;
+    }
+    if gap >= 15 {
+        res += gap / 15;
+        gap %= 15;
+    }
+    if gap >= 5 {
+        res += gap / 5;
+        gap %= 5;
+    }
+    res + gap
+}
