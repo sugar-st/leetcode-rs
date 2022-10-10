@@ -513,3 +513,22 @@ pub fn convert_time(cur: String, cor: String) -> i32 {
     }
     res + gap
 }
+// 2383: https://leetcode.cn/problems/minimum-hours-of-training-to-win-a-competition/
+pub fn min_number_of_hours(mut ienrg: i32, mut iexp: i32, enrg: Vec<i32>, exp: Vec<i32>) -> i32 {
+    let mut res = 0;
+    for i in 0..exp.len() {
+        let need_eng = enrg[i] - ienrg + 1;
+        let need_exp = exp[i] - iexp + 1;
+        if need_eng > 0 {
+            res += need_eng;
+            ienrg += need_eng;
+        }
+        if need_exp > 0 {
+            res += need_exp;
+            iexp += need_exp;
+        }
+        ienrg -= enrg[i];
+        iexp += exp[i];
+    }
+    res
+}
