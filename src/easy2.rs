@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
+use core::num;
+
 // 1002: https://leetcode.cn/problems/find-common-characters/
 pub fn common_chars(words: Vec<String>) -> Vec<String> {
     fn frequency(word: &String) -> [i8; 26] {
@@ -513,6 +515,17 @@ pub fn convert_time(cur: String, cor: String) -> i32 {
     }
     res + gap
 }
+// 2259: https://leetcode.cn/problems/remove-digit-from-number-to-maximize-result/
+// pub fn remove_digit(number: String, digit: char) -> String {
+//     let digits = number.as_str();
+//     for i in number.as_bytes() {
+//
+//     }
+//     for i in 0..number.len() {
+//         let a = digits[i];
+//     }
+//     String::from("")
+// }
 // 2383: https://leetcode.cn/problems/minimum-hours-of-training-to-win-a-competition/
 pub fn min_number_of_hours(mut ienrg: i32, mut iexp: i32, enrg: Vec<i32>, exp: Vec<i32>) -> i32 {
     let mut res = 0;
@@ -531,4 +544,30 @@ pub fn min_number_of_hours(mut ienrg: i32, mut iexp: i32, enrg: Vec<i32>, exp: V
         iexp += exp[i];
     }
     res
+}
+// 2389: https://leetcode.cn/problems/longest-subsequence-with-limited-sum/
+pub fn answer_queries(mut nums: Vec<i32>, queries: Vec<i32>) -> Vec<i32> {
+    nums.sort();
+    for i in 1..nums.len() {
+        nums[i] += nums[i - 1];
+    }
+    queries
+        .iter()
+        .map(|&x| {
+            let (mut i, mut j) = (0, nums.len());
+            while i < j - 1 {
+                let mid = i + (j - i) / 2;
+                if nums[mid] <= x {
+                    i = mid;
+                } else {
+                    j = mid;
+                }
+            }
+            if nums[i] <= x {
+                i as i32 + 1
+            } else {
+                0
+            }
+        })
+        .collect()
 }
