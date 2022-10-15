@@ -534,6 +534,15 @@ pub fn remove_digit(number: String, digit: char) -> String {
     number.remove(idx);
     number
 }
+// 2335: https://leetcode.cn/problems/minimum-amount-of-time-to-fill-cups/
+pub fn fill_cups(mut a: Vec<i32>) -> i32 {
+    a.sort();
+    if a[2] > a[0] + a[1] {
+        a[2]
+    } else {
+        (a[0] + a[1] + a[2] + 1) / 2
+    }
+}
 // 2383: https://leetcode.cn/problems/minimum-hours-of-training-to-win-a-competition/
 pub fn min_number_of_hours(mut ienrg: i32, mut iexp: i32, enrg: Vec<i32>, exp: Vec<i32>) -> i32 {
     let mut res = 0;
