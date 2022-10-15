@@ -516,16 +516,24 @@ pub fn convert_time(cur: String, cor: String) -> i32 {
     res + gap
 }
 // 2259: https://leetcode.cn/problems/remove-digit-from-number-to-maximize-result/
-// pub fn remove_digit(number: String, digit: char) -> String {
-//     let digits = number.as_str();
-//     for i in number.as_bytes() {
-//
-//     }
-//     for i in 0..number.len() {
-//         let a = digits[i];
-//     }
-//     String::from("")
-// }
+pub fn remove_digit(number: String, digit: char) -> String {
+    let digits = number.as_bytes();
+    let digit = digit as u8;
+
+    let mut i = 0;
+    let mut idx = i;
+    while i < digits.len() {
+        if digits[i] == digit {
+            idx = i;
+            if i + 1 < digits.len() && digits[i + 1] > digit || i + 1 == digits.len() {
+                break;
+            }
+        }
+        i += 1;
+    }
+    number.remove(idx);
+    number
+}
 // 2383: https://leetcode.cn/problems/minimum-hours-of-training-to-win-a-competition/
 pub fn min_number_of_hours(mut ienrg: i32, mut iexp: i32, enrg: Vec<i32>, exp: Vec<i32>) -> i32 {
     let mut res = 0;
