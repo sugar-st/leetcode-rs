@@ -395,6 +395,34 @@ pub fn maximum_units(mut box_types: Vec<Vec<i32>>, mut truck_size: i32) -> i32 {
     }
     res
 }
+// 1736: https://leetcode.cn/problems/latest-time-by-replacing-hidden-digits/
+pub fn maximum_time(time: String) -> String {
+    let mut s = Vec::with_capacity(5);
+    for c in time.bytes() {
+        s.push(c);
+    }
+    if s[0] == b'?' {
+        if s[1] - b'0' < 4 || s[1] == b'?' {
+            s[0] = b'2';
+        } else {
+            s[0] = b'1';
+        }
+    }
+    if s[1] == b'?' {
+        match s[0] {
+            b'0' | b'1' => s[1] = b'9',
+            _ => s[1] = b'3',
+        }
+    }
+    if s[3] == b'?' {
+        s[3] = b'5';
+    }
+    if s[4] == b'?' {
+        s[4] = b'9';
+    }
+
+    String::from_utf8(s).unwrap()
+}
 // 1827: https://leetcode.cn/problems/minimum-operations-to-make-the-array-increasing/
 pub fn min_operations(mut nums: Vec<i32>) -> i32 {
     let mut res = 0;
@@ -514,7 +542,7 @@ pub fn convert_time(cur: String, cor: String) -> i32 {
     res + gap
 }
 // 2259: https://leetcode.cn/problems/remove-digit-from-number-to-maximize-result/
-pub fn remove_digit(number: String, digit: char) -> String {
+pub fn remove_digit(mut number: String, digit: char) -> String {
     let digits = number.as_bytes();
     let digit = digit as u8;
 
