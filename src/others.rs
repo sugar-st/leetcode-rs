@@ -1,6 +1,29 @@
 #![allow(dead_code)]
-#![allow(unused_variables)]
 
+// LCP 33: https://leetcode.cn/problems/o8SXZn/
+pub fn store_water(bucket: Vec<i32>, vat: Vec<i32>) -> i32 {
+    let n = vat.len();
+    let &max_opt = vat.iter().max().unwrap();
+
+    if max_opt == 0 {
+        return 0;
+    }
+
+    let mut ans = 10000;
+
+    for k in 1..=max_opt {
+        let mut cur = k;
+        if k >= ans {
+            break;
+        }
+        for i in 0..n {
+            let r = if vat[i] % k == 0 { 0 } else { 1 };
+            cur += 0.max(vat[i] / k + r - bucket[i]);
+        }
+        ans = ans.min(cur);
+    }
+    ans
+}
 // LCP 40: https://leetcode.cn/problems/uOAnQW/
 pub fn maxmium_score(mut cards: Vec<i32>, cnt: i32) -> i32 {
     cards.sort();
@@ -8,7 +31,7 @@ pub fn maxmium_score(mut cards: Vec<i32>, cnt: i32) -> i32 {
     let former = &cards[0..cards.len() - cnt];
     let latter = &cards[cards.len() - cnt..];
 
-    let mut sum = latter.iter().sum::<i32>();
+    let sum = latter.iter().sum::<i32>();
     if sum % 2 == 0 {
         return sum;
     }
@@ -53,7 +76,7 @@ pub fn least_minutes(n: i32) -> i32 {
     let mut res = n;
     let mut speed = 1;
     let mut upgrade_time = 0;
-    let mut download_time = 0;
+    let mut download_time;
     while speed <= n {
         speed <<= 1;
         upgrade_time += 1;
