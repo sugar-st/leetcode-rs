@@ -65,3 +65,28 @@ pub fn least_minutes(n: i32) -> i32 {
     }
     res
 }
+// LCS 02: https://leetcode.cn/problems/WqXACV/
+pub fn half_questions(questions: Vec<i32>) -> i32 {
+    use std::collections::HashMap;
+    let mut arr: Vec<i32> = questions
+        .iter()
+        .fold(HashMap::new(), |mut m, x| {
+            *m.entry(x).or_insert(0) += 1;
+            m
+        })
+        .iter()
+        .map(|(_, &v)| v)
+        .collect();
+    arr.sort_unstable_by(|a, b| b.cmp(&a));
+    let mut sum = 0;
+    let mut kind = 0;
+    for ele in arr {
+        sum += ele as usize;
+        kind += 1;
+        if sum >= questions.len() / 2 {
+            return kind;
+        }
+    }
+    kind
+}
+// 剑指 Offer II 019: https://leetcode.cn/problems/RQku0D/, the same as 680
